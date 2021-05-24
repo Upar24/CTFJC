@@ -16,13 +16,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             CTF240521Theme {
                 // A surface container using the 'background' color from the theme
-                // A surface container using the 'background' color from the theme
-                // A surface container using the 'background' color from the theme
-                // A surface container using the 'background' color from the theme
-                // A surface container using the 'background' color from the theme
-                // A surface container using the 'background' color from the theme
-                // A surface container using the 'background' color from the theme
-                // A surface container using the 'background' color from the theme
                 Surface(color = MaterialTheme.colors.background) {
                     Greeting("Android")
                 }
@@ -35,11 +28,11 @@ class MainActivity : ComponentActivity() {
 fun Greeting(name: String) {
     Text(text = "Hello $name!")
 }
-//
-//@Preview(showBackground = true)k
-//@Composable
-//fun DefaultPreview() {
-//    CTF240521Theme {
-//        Greeting("Android")
-//    }
-//}
+
+@Preview(showBackground = true)
+@Composable
+fun DefaultPreview() {
+    CTF240521Theme {
+        Greeting("Android")
+    }
+}
