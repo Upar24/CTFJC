@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">CTF240521</string>
+    <string name="home_screen_route">Home</string>
+    <string name="party_screen_route">Party</string>
+    <string name="add_screen_route">Add</string>
+    <string name="trading_screen_route">Trading</string>
+    <string name="profile_screen_route">Profile</string>
 </resources>
