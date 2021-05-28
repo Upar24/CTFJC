@@ -16,9 +16,7 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             CTF240521Theme {
-                Surface(color = MaterialTheme.colors.background) {
-                }
-                MainScreen()
+                    MainScreen()
             }
         }
     }
