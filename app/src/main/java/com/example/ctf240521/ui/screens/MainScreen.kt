@@ -26,18 +26,13 @@ import com.example.ctf240521.R
 sealed class BottomNavigationScreens(
     val route:String,
     @StringRes val resourceId:Int,
-    val icon: ImageVector
+    val icon: Int
 ){
-//    object Home:BottomNavigationScreens("Home",R.string.home_screen_route, R.drawable.home)
-//    object Party:BottomNavigationScreens("Party",R.string.party_screen_route, R.drawable.party)
-//    object Add:BottomNavigationScreens("Add",R.string.add_screen_route, R.drawable.add)
-//    object Trading:BottomNavigationScreens("Trading",R.string.trading_screen_route, R.drawable.trading)
-//    object Profile:BottomNavigationScreens("Profile",R.string.profile_screen_route, R.drawable.profile)
-    object Home:BottomNavigationScreens("Home",R.string.home_screen_route, Icons.Filled.Home)
-    object Party:BottomNavigationScreens("Party",R.string.party_screen_route, Icons.Filled.Star)
-    object Add:BottomNavigationScreens("Add",R.string.add_screen_route, Icons.Filled.Add)
-    object Trading:BottomNavigationScreens("Trading",R.string.trading_screen_route,Icons.Filled.Search)
-    object Profile:BottomNavigationScreens("Profile",R.string.profile_screen_route, Icons.Filled.Person)
+    object Home:BottomNavigationScreens("Home",R.string.home_screen_route, R.drawable.home)
+    object Party:BottomNavigationScreens("Party",R.string.party_screen_route, R.drawable.party)
+    object Add:BottomNavigationScreens("Add",R.string.add_screen_route, R.drawable.add)
+    object Trading:BottomNavigationScreens("Trading",R.string.trading_screen_route, R.drawable.trading)
+    object Profile:BottomNavigationScreens("Profile",R.string.profile_screen_route, R.drawable.profile)
 }
 
 
@@ -66,29 +61,37 @@ fun CTFAppBottomNavigation(
     items:List<BottomNavigationScreens>
 ){
     BottomNavigation {
-        val currentRoute= currentRoute(navController)
+
+        val navBackStackEntry by navController.currentBackStackEntryAsState()
+        val currentRoute= navBackStackEntry?.destination?.route
         items.forEach{screen ->
             BottomNavigationItem(
-                icon= {Icon(imageVector = screen.icon,contentDescription = "apa aj")},
-//                icon= { Image(painterResource(id =screen.icon),
-//                    contentDescription = screen.route,
-//                    modifier = Modifier.height(30.dp)
-//                )},
-                alwaysShowLabel= false,
-                selected = currentRoute==screen.route,
-                onClick = {
-                    if(currentRoute != screen.route){
-                        navController.navigate(screen.route)
-                    }
-                },
+                icon= { Image(painterResource(id =screen.icon),
+                    contentDescription = screen.route,
+                    modifier = Modifier.height(30.dp)
+                )},
                 label={Text(stringResource(id = screen.resourceId),
                     color= Color.LightGray,
                     fontSize = 14.sp,fontWeight = FontWeight.Bold
                 )},
+                selected = currentRoute==screen.route,
+                alwaysShowLabel= false,
+                onClick = {
+                    navController.navigate(screen.route){
+                        navController.graph.startDestinationRoute?.let {
+                            popUpTo(it){
+                                saveState=true
+                            }
+                        }
+                        launchSingleTop=true
+                        restoreState=true
+                    }
+                },
             )
         }
     }
 }
+
 @Composable
 fun MainScreenNavigationConfiguration(
     navController: NavHostController
@@ -111,9 +114,9 @@ fun MainScreenNavigationConfiguration(
         }
     }
 }
-
-@Composable
-fun currentRoute(navController: NavController):String?{
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    return navBackStackEntry?.arguments?.getString("Home")
-}
+//@Composable
+//fun isCurrentRoute(navController: NavHostController, screen:BottomNavigationScreens):Boolean?{
+//    val navBackStackEntry by navController.currentBackStackEntryAsState()
+////    return navBackStackEntry.arguments?.getString(KEY_ROUTE)?.contains(screen.route)
+//    return navBackStackEntry.destination.route
+//}
