@@ -22,6 +22,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
 import com.example.ctf240521.R
+import com.example.ctf240521.ui.component.CTFAppBottomNavigation
 
 sealed class BottomNavigationScreens(
     val route:String,
@@ -55,42 +56,7 @@ fun MainScreen(){
         MainScreenNavigationConfiguration(navController)
     }
 }
-@Composable
-fun CTFAppBottomNavigation(
-    navController: NavHostController,
-    items:List<BottomNavigationScreens>
-){
-    BottomNavigation {
 
-        val navBackStackEntry by navController.currentBackStackEntryAsState()
-        val currentRoute= navBackStackEntry?.destination?.route
-        items.forEach{screen ->
-            BottomNavigationItem(
-                icon= { Image(painterResource(id =screen.icon),
-                    contentDescription = screen.route,
-                    modifier = Modifier.height(30.dp)
-                )},
-                label={Text(stringResource(id = screen.resourceId),
-                    color= Color.LightGray,
-                    fontSize = 14.sp,fontWeight = FontWeight.Bold
-                )},
-                selected = currentRoute==screen.route,
-                alwaysShowLabel= false,
-                onClick = {
-                    navController.navigate(screen.route){
-                        navController.graph.startDestinationRoute?.let {
-                            popUpTo(it){
-                                saveState=true
-                            }
-                        }
-                        launchSingleTop=true
-                        restoreState=true
-                    }
-                },
-            )
-        }
-    }
-}
 
 @Composable
 fun MainScreenNavigationConfiguration(
@@ -114,9 +80,3 @@ fun MainScreenNavigationConfiguration(
         }
     }
 }
-//@Composable
-//fun isCurrentRoute(navController: NavHostController, screen:BottomNavigationScreens):Boolean?{
-//    val navBackStackEntry by navController.currentBackStackEntryAsState()
-////    return navBackStackEntry.arguments?.getString(KEY_ROUTE)?.contains(screen.route)
-//    return navBackStackEntry.destination.route
-//}
