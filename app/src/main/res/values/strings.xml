@@ -5,4 +5,6 @@
     <string name="add_screen_route">Add</string>
     <string name="trading_screen_route">Trading</string>
     <string name="profile_screen_route">Profile</string>
+    <string name="title">CTForever</string>
+    <string name="search_screen_route">Search</string>
 </resources>

@@ -12,6 +12,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.res.colorResource
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -23,6 +24,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
 import com.example.ctf240521.R
 import com.example.ctf240521.ui.component.CTFAppBottomNavigation
+import com.example.ctf240521.ui.component.CTFAppDrawerNavigation
+import com.example.ctf240521.ui.component.CTFAppTopNavigation
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.launch
 
 sealed class BottomNavigationScreens(
     val route:String,
@@ -34,12 +39,15 @@ sealed class BottomNavigationScreens(
     object Add:BottomNavigationScreens("Add",R.string.add_screen_route, R.drawable.add)
     object Trading:BottomNavigationScreens("Trading",R.string.trading_screen_route, R.drawable.trading)
     object Profile:BottomNavigationScreens("Profile",R.string.profile_screen_route, R.drawable.profile)
+    object Search:BottomNavigationScreens("Search",R.string.search_screen_route, R.drawable.search)
 }
 
 
 @Composable
 fun MainScreen(){
     val navController = rememberNavController()
+    val scaffoldState:ScaffoldState= rememberScaffoldState()
+    val coroutineScope= rememberCoroutineScope()
     val bottomNavigationItems= listOf(
         BottomNavigationScreens.Home,
         BottomNavigationScreens.Party,
@@ -49,9 +57,29 @@ fun MainScreen(){
     )
     
     Scaffold (
+        topBar={
+            CTFAppTopNavigation(
+                onIconClick = {
+                    coroutineScope.launch {
+                        scaffoldState.drawerState.open()
+                    }
+                },
+                navController
+            )
+        },
+        scaffoldState=scaffoldState,
+        drawerContent={
+            CTFAppDrawerNavigation(
+                closeDrawerAction={
+                    coroutineScope.launch {
+                        scaffoldState.drawerState.close()
+                    }
+                }
+            )
+        },
         bottomBar ={
             CTFAppBottomNavigation(navController , bottomNavigationItems )
-        },
+        }
     ){
         MainScreenNavigationConfiguration(navController)
     }
@@ -77,6 +105,9 @@ fun MainScreenNavigationConfiguration(
         }
         composable(BottomNavigationScreens.Profile.route){
             ProfileScreen()
+        }
+        composable(BottomNavigationScreens.Search.route){
+            SearchScreen()
         }
     }
 }
