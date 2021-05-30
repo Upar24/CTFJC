@@ -7,4 +7,5 @@
     <string name="profile_screen_route">Profile</string>
     <string name="title">CTForever</string>
     <string name="search_screen_route">Search</string>
+    <string name="list_screen_route">List</string>
 </resources>
