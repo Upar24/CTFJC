@@ -23,6 +23,11 @@ sealed class BottomNavigationScreens(
     object Trading:BottomNavigationScreens("Trading",R.string.trading_screen_route, R.drawable.trading)
     object Profile:BottomNavigationScreens("Profile",R.string.profile_screen_route, R.drawable.profile)
     object Search:BottomNavigationScreens("Search",R.string.search_screen_route, R.drawable.search)
+    object MyProfile:BottomNavigationScreens("MyProfile",R.string.myprofile_screen_route, R.drawable.profile)
+    object Calculation:BottomNavigationScreens("Calculation",R.string.calculation_screen_route, R.drawable.calculator)
+    object TipsTricks:BottomNavigationScreens("TipsTricks",R.string.tipstricks_screen_route, R.drawable.tipsandtrick)
+    object Dictionary:BottomNavigationScreens("Dictionary",R.string.dictionary_screen_route, R.drawable.dictionary)
+    object Notification:BottomNavigationScreens("Notification",R.string.notification_screen_route, R.drawable.notification)
 }
 
 
@@ -37,6 +42,13 @@ fun MainScreen(){
         BottomNavigationScreens.Add,
         BottomNavigationScreens.Trading,
         BottomNavigationScreens.Profile
+    )
+    val drawerNavigationItems= listOf(
+        BottomNavigationScreens.MyProfile,
+        BottomNavigationScreens.Calculation,
+        BottomNavigationScreens.TipsTricks,
+        BottomNavigationScreens.Dictionary,
+        BottomNavigationScreens.Notification
     )
     Scaffold (
         topBar={
@@ -56,7 +68,9 @@ fun MainScreen(){
                     coroutineScope.launch {
                         scaffoldState.drawerState.close()
                     }
-                }
+                },
+                navController=navController,
+                items = drawerNavigationItems
                     )
 
         },

@@ -8,4 +8,9 @@
     <string name="title">CTForever</string>
     <string name="search_screen_route">Search</string>
     <string name="list_screen_route">List</string>
+    <string name="myprofile_screen_route">MyProfile</string>
+    <string name="calculation_screen_route">Calculation</string>
+    <string name="tipstricks_screen_route">TipsTricks</string>
+    <string name="dictionary_screen_route">Dictionary</string>
+    <string name="notification_screen_route">Notification</string>
 </resources>
