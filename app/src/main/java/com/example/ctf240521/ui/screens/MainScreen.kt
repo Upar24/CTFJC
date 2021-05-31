@@ -1,6 +1,5 @@
 package com.example.ctf240521.ui.screens
 
-import androidx.activity.compose.BackHandler
 import androidx.annotation.StringRes
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
@@ -48,21 +47,17 @@ fun MainScreen(){
                     }
                 },
                 navController,
-                BackHandler(onBack = {
-                    if(scaffoldState.drawerState.isOpen){
-                        coroutineScope.launch { scaffoldState.drawerState.close() }
-                    }else{
-                            navController.navigate("Home")
-                        }
-                    }
-                )
-
             )
         },
         scaffoldState=scaffoldState,
         drawerContent={
-            CTFAppDrawerNavigation {
-            }
+            CTFAppDrawerNavigation (
+                closeDrawerAction = {
+                    coroutineScope.launch {
+                        scaffoldState.drawerState.close()
+                    }
+                }
+                    )
 
         },
         bottomBar ={
