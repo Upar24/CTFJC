@@ -28,6 +28,11 @@ sealed class BottomNavigationScreens(
     object TipsTricks:BottomNavigationScreens("TipsTricks",R.string.tipstricks_screen_route, R.drawable.tipsandtrick)
     object Dictionary:BottomNavigationScreens("Dictionary",R.string.dictionary_screen_route, R.drawable.dictionary)
     object Notification:BottomNavigationScreens("Notification",R.string.notification_screen_route, R.drawable.notification)
+    object Relationship:BottomNavigationScreens("Section",R.string.relationship,R.drawable.relationshipchat)
+    object Ask:BottomNavigationScreens("Section",R.string.ask,R.drawable.askchat)
+    object Opinion:BottomNavigationScreens("Section",R.string.opinion,R.drawable.opinionchat)
+    object Random:BottomNavigationScreens("Section",R.string.random,R.drawable.randomchat)
+    object Sale:BottomNavigationScreens("Section",R.string.sale,R.drawable.sale)
 }
 
 
@@ -50,6 +55,13 @@ fun MainScreen(){
         BottomNavigationScreens.Dictionary,
         BottomNavigationScreens.Notification
     )
+    val sectionItems= listOf(
+        BottomNavigationScreens.Relationship,
+        BottomNavigationScreens.Ask,
+        BottomNavigationScreens.Opinion,
+        BottomNavigationScreens.Random,
+        BottomNavigationScreens.Sale
+    )
     Scaffold (
         topBar={
             CTFAppTopNavigation(
@@ -70,7 +82,8 @@ fun MainScreen(){
                     }
                 },
                 navController=navController,
-                items = drawerNavigationItems
+                items = drawerNavigationItems,
+                chatItems = sectionItems
                     )
 
         },
@@ -105,6 +118,24 @@ fun MainScreenNavigationConfiguration(
         }
         composable(BottomNavigationScreens.Search.route){
             SearchScreen()
+        }
+        composable(BottomNavigationScreens.MyProfile.route){
+            MyProfileScreen()
+        }
+        composable(BottomNavigationScreens.Calculation.route){
+            CalculationScreen()
+        }
+        composable(BottomNavigationScreens.TipsTricks.route){
+            TipsTricksScreen()
+        }
+        composable(BottomNavigationScreens.Dictionary.route){
+            DictionaryScreen()
+        }
+        composable(BottomNavigationScreens.Notification.route){
+            NotificationScreen()
+        }
+        composable(BottomNavigationScreens.Ask.route){
+            SectionScreen()
         }
 
     }

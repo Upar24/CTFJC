@@ -9,6 +9,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -23,14 +24,15 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.ctf240521.R
 import com.example.ctf240521.ui.screens.BottomNavigationScreens
-import com.google.android.material.internal.NavigationMenu
+import com.example.ctf240521.ui.theme.Blue100
 
 @Composable
 fun CTFAppDrawerNavigation(
     modifier: Modifier = Modifier,
     closeDrawerAction: () -> Unit,
     navController: NavHostController,
-    items:List<BottomNavigationScreens>
+    items:List<BottomNavigationScreens>,
+    chatItems:List<BottomNavigationScreens>
 ){
     Column(
         modifier= modifier
@@ -38,8 +40,13 @@ fun CTFAppDrawerNavigation(
             .background(color = MaterialTheme.colors.surface)
     ){
         AppdrawerHeader(closeDrawerAction)
+        Divider()
         AppdrawerBody(closeDrawerAction,navController,items)
-//        AppdrawerFooter(modifier)
+        Divider()
+        Text(text="CTF Section",Modifier.padding(start=16.dp))
+        AppdrawerBody(closeDrawerAction, navController, chatItems )
+        Divider()
+        AppdrawerFooter()
     }
 }
 @Composable
@@ -103,10 +110,7 @@ fun AppdrawerHeader(closeDrawerAction: () -> Unit) {
             ProfileInfoItem(number = "8", desc = "CTF Coins" )
         }
     }
-    Divider(
-        color= MaterialTheme.colors.onSurface.copy(alpha=.2f),
-        modifier = Modifier.padding(start = 7.dp,end=7.dp,top=7.dp)
-    )
+
 }
 @Composable
 fun AppdrawerBody(
@@ -116,67 +120,51 @@ fun AppdrawerBody(
 ) {
     val navBackStackEntry by navController.currentBackStackEntryAsState()
     val currentRoute= navBackStackEntry?.destination?.route
-    items.forEach{item ->
-//        BottomNavigationItem(
-//            icon= { Image(
-//                painterResource(id =screen.icon),
-//                contentDescription = screen.route,
-//                modifier = Modifier.height(30.dp)
-//            )
-//            },
-//            label={
-//                Text(
-//                    stringResource(id = screen.resourceId),
-//                    color= Color.LightGray,
-//                    fontSize = 14.sp,fontWeight = FontWeight.Bold
-//                )
-//            },
-//            selected = currentRoute==screen.route,
-//            alwaysShowLabel= false,
-//            onClick = {
-//                navController.navigate(screen.route){
-//                    navController.graph.startDestinationRoute?.let {
-//                        popUpTo(it){
-//                            saveState=true
-//                        }
-//                    }
-//                    launchSingleTop=true
-//                    restoreState=true
-//                }
-//            },
-//        )
-//    }
+    items.forEach {item ->
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 20.dp)
+                .clickable {
+                    navController.navigate(item.route) {
+                        navController.graph.startDestinationRoute?.let {
+                            popUpTo(it) {
+                                saveState = true
+                            }
+                        }
+                        launchSingleTop = true
+                        restoreState = true
+                    }
+                    closeDrawerAction()
+                },
+            verticalAlignment = Alignment.CenterVertically
+        ){
+            Image(painter = painterResource(item.icon), contentDescription = "apa aj",modifier = Modifier.height(30.dp))
+            Text(stringResource(item.resourceId),fontSize = 16.sp)
+        }
+    }
+}
+@Composable
+fun AppdrawerFooter(){
+    Row(
+        modifier=Modifier.fillMaxWidth().padding(end = 15.dp),
+        horizontalArrangement = Arrangement.SpaceBetween,
+        verticalAlignment = Alignment.CenterVertically
+    )
+    {
+        Row(
+            verticalAlignment = Alignment.CenterVertically,
+            modifier = Modifier.height(50.dp)
+                .clickable {  }
+                .padding(10.dp)
+        ){
+            Icon(painter = painterResource(id = R.drawable.yinyang), contentDescription ="theme",
+            )
+            Text("Theme")
+        }
+        Button(onClick = { },colors= ButtonDefaults.textButtonColors(backgroundColor = Color.Blue)) {
+            Text(text="Login")
+        }
     }
 }
 
-@Composable
-fun ProfileInfoItem(
-    number:String,
-    desc:String
-){
-    Column(
-        horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.SpaceBetween
-    ){
-        Text(
-            text = number,
-            style = TextStyle(
-                fontWeight = FontWeight.Bold,
-                fontSize = 20.sp,
-                letterSpacing = 0.15.sp,
-                textAlign = TextAlign.Center
-            ),
-//            modifier = Modifier
-//                .padding(start = 16.dp, end = 16.dp)
-        )
-        Text(
-            text=desc,
-            style= TextStyle(fontSize = 16.sp)
-        )
-    }
-}
-@Preview
-@Composable
-private fun ProfileInfoItemPreview(){
-    ProfileInfoItem("8","lol")
-}

@@ -13,4 +13,9 @@
     <string name="tipstricks_screen_route">TipsTricks</string>
     <string name="dictionary_screen_route">Dictionary</string>
     <string name="notification_screen_route">Notification</string>
+    <string name="relationship">RelationShip</string>
+    <string name="ask">Ask</string>
+    <string name="opinion">Opinion</string>
+    <string name="random">Random</string>
+    <string name="sale">HOT SALE</string>
 </resources>
