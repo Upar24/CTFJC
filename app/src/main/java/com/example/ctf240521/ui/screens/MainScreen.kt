@@ -83,7 +83,7 @@ fun MainScreen(){
                 },
                 navController=navController,
                 items = drawerNavigationItems,
-                chatItems = sectionItems
+                chatItems = sectionItems,
                     )
 
         },
@@ -96,12 +96,14 @@ fun MainScreen(){
 }
 
 
+
+
 @Composable
 fun MainScreenNavigationConfiguration(
     navController: NavHostController
 ){
-    NavHost(navController, startDestination = BottomNavigationScreens.Home.route){
-        composable(BottomNavigationScreens.Home.route){
+    NavHost(navController, startDestination = BottomNavigationScreens.Home.route.plus("/{userID}")){
+        composable(BottomNavigationScreens.Home.route.plus("/{userID}")){
             HomeScreen()
         }
         composable(BottomNavigationScreens.Party.route){

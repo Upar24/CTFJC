@@ -145,24 +145,29 @@ fun AppdrawerBody(
     }
 }
 @Composable
-fun AppdrawerFooter(){
+fun AppdrawerFooter(
+){
+    val x= MyAlertDialog()
     Row(
-        modifier=Modifier.fillMaxWidth().padding(end = 15.dp),
+        modifier= Modifier
+            .fillMaxWidth()
+            .padding(end = 15.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     )
     {
         Row(
             verticalAlignment = Alignment.CenterVertically,
-            modifier = Modifier.height(50.dp)
-                .clickable {  }
+            modifier = Modifier
+                .height(50.dp)
+                .clickable { }
                 .padding(10.dp)
         ){
             Icon(painter = painterResource(id = R.drawable.yinyang), contentDescription ="theme",
             )
             Text("Theme")
         }
-        Button(onClick = { },colors= ButtonDefaults.textButtonColors(backgroundColor = Color.Blue)) {
+        Button(onClick = {x},colors= ButtonDefaults.textButtonColors(backgroundColor = Color.Blue)) {
             Text(text="Login")
         }
     }
