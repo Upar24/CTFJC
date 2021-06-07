@@ -7,9 +7,8 @@ import androidx.compose.runtime.*
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
 import com.example.ctf240521.R
-import com.example.ctf240521.ui.component.CTFAppBottomNavigation
-import com.example.ctf240521.ui.component.CTFAppDrawerNavigation
-import com.example.ctf240521.ui.component.CTFAppTopNavigation
+import com.example.ctf240521.ui.component.*
+import com.example.ctf240521.viewmodel.LoginViewModel
 import kotlinx.coroutines.launch
 
 sealed class BottomNavigationScreens(
@@ -138,6 +137,9 @@ fun MainScreenNavigationConfiguration(
         }
         composable(BottomNavigationScreens.Ask.route){
             SectionScreen()
+        }
+        composable("Login"){
+            Login()
         }
 
     }

@@ -46,7 +46,7 @@ fun CTFAppDrawerNavigation(
         Text(text="CTF Section",Modifier.padding(start=16.dp))
         AppdrawerBody(closeDrawerAction, navController, chatItems )
         Divider()
-        AppdrawerFooter()
+        AppdrawerFooter(closeDrawerAction,navController)
     }
 }
 @Composable
@@ -146,8 +146,9 @@ fun AppdrawerBody(
 }
 @Composable
 fun AppdrawerFooter(
+    closeDrawerAction: () -> Unit,
+    navController: NavHostController
 ){
-    val x= MyAlertDialog()
     Row(
         modifier= Modifier
             .fillMaxWidth()
@@ -167,9 +168,24 @@ fun AppdrawerFooter(
             )
             Text("Theme")
         }
-        Button(onClick = {x},colors= ButtonDefaults.textButtonColors(backgroundColor = Color.Blue)) {
+        Button(
+            onClick = {
+                closeDrawerAction()
+                navController.navigate("Login"){
+                    navController.graph.startDestinationRoute?.let {
+                        popUpTo(it){
+                            saveState=true
+                        }
+                    }
+                    launchSingleTop=true
+                    restoreState=true
+                }
+            }
+            ,
+            colors= ButtonDefaults.textButtonColors(backgroundColor = Color.Blue)) {
             Text(text="Login")
         }
     }
 }
+
 

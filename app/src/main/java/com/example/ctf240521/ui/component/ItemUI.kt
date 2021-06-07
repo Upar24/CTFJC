@@ -4,8 +4,7 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.text.KeyboardOptions
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -14,10 +13,11 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.compose.material.Divider
-import androidx.compose.material.OutlinedTextField
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.ctf240521.viewmodel.LoginViewModel
+import com.example.ctf240521.viewmodel.TextFieldState
 
 @Composable
 fun ProfileInfoItem(number:String,desc:String){
@@ -57,4 +57,32 @@ public fun TextFieldItem(lol:String) {
             textValue.value = it
         },
     )
+}
+@Composable
+fun EmailField(emailState: TextFieldState = remember {TextFieldState()}){
+    OutlinedTextField(
+        label={Text(text="Email")},
+        value =emailState.text,
+        onValueChange = {
+            emailState.text = it
+        }
+    )
+}
+@Composable
+fun PasswordField(passwordState: TextFieldState = remember {TextFieldState()}){
+    OutlinedTextField(
+        label={Text(text="Password")},
+        value =passwordState.text,
+        onValueChange = {
+            passwordState.text = it
+        }
+    )
+}
+@Composable
+fun LoginButton(onValidate: () -> Unit) {
+    Button(
+        onClick =  onValidate
+    ){
+        Text("Login")
+    }
 }
