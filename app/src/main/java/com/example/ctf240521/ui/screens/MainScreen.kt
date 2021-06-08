@@ -4,11 +4,12 @@ import androidx.annotation.StringRes
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.*
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.*
 import com.example.ctf240521.R
 import com.example.ctf240521.ui.component.*
-import com.example.ctf240521.viewmodel.LoginViewModel
+import com.example.ctf240521.viewmodel.RegisterViewModel
 import kotlinx.coroutines.launch
 
 sealed class BottomNavigationScreens(
@@ -101,8 +102,8 @@ fun MainScreen(){
 fun MainScreenNavigationConfiguration(
     navController: NavHostController
 ){
-    NavHost(navController, startDestination = BottomNavigationScreens.Home.route.plus("/{userID}")){
-        composable(BottomNavigationScreens.Home.route.plus("/{userID}")){
+    NavHost(navController, startDestination = BottomNavigationScreens.Home.route){
+        composable(BottomNavigationScreens.Home.route){
             HomeScreen()
         }
         composable(BottomNavigationScreens.Party.route){
@@ -138,8 +139,9 @@ fun MainScreenNavigationConfiguration(
         composable(BottomNavigationScreens.Ask.route){
             SectionScreen()
         }
-        composable("Login"){
-            Login()
+        composable("Login"){backStackEntry ->
+            val registerViewModel = hiltViewModel<RegisterViewModel>()
+            RegisterScreen(registerViewModel)
         }
 
     }

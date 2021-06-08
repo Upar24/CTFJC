@@ -11,5 +11,5 @@ import com.example.ctf240521.data.local.entities.Post
 )
 @TypeConverters(Converters::class)
 abstract class PostDatabase : RoomDatabase(){
-    abstract fun postDao(): PostDao
+    abstract fun postDao() : PostDao
 }
