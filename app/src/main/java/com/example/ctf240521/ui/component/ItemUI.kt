@@ -1,7 +1,7 @@
 package com.example.ctf240521.ui.component
 
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.*
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -13,8 +13,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ctf240521.viewmodel.TextFieldState
 
 @Composable
@@ -45,9 +43,34 @@ fun Divider(){
         modifier = Modifier.padding(start = 7.dp, end = 7.dp, bottom = 7.dp)
     )
 }
-
 @Composable
-public fun TextFieldItem(lol:String) {
+fun SwitchTOLoginOrRegisterTexts(
+    modifier: Modifier,
+    text1: String,
+    text2: String,
+    onClick: () -> Unit
+) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
+        Text(
+            text = text1,
+            color = MaterialTheme.colors.onBackground,
+            style = MaterialTheme.typography.body2
+        )
+        Spacer(modifier = Modifier.padding(2.dp))
+        Text(
+            text = text2,
+            color = MaterialTheme.colors.primary,
+            style = MaterialTheme.typography.body1,
+            modifier = Modifier.clickable { onClick() }
+        )
+    }
+}
+@Composable
+fun TextFieldItem(lol:String) {
     val textValue = remember { mutableStateOf("") }
     OutlinedTextField(
         label={Text(text=lol)},
@@ -88,11 +111,11 @@ fun RepeatePasswordField(repeatePasswordState: TextFieldState = remember {TextFi
     )
 }
 @Composable
-fun RegisterButton(onValidate: () -> Unit) {
+fun RegisterButton(desc: String,onValidate: () -> Unit) {
     Button(
         onClick =  onValidate
     ){
-        Text("Register")
+        Text(desc)
     }
 }
 @Composable
@@ -104,15 +127,15 @@ fun ProgressBarItem(){
             .fillMaxSize()
             .padding(bottom = 100.dp)
     ) {
-        CircularProgressIndicator()
-        Spacer(Modifier.size(10.dp))
-        Text(
-            text="Please wait.."
-        )
+        Row(
+            verticalAlignment = Alignment.CenterVertically
+        ) {
+            CircularProgressIndicator()
+            Spacer(Modifier.size(10.dp))
+            Text(
+                text="Please wait.."
+            )
+        }
+
     }
-}
-@Preview
-@Composable
-fun x(){
-    ProgressBarItem()
 }

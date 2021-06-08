@@ -2,6 +2,7 @@ package com.example.ctf240521.ui.screens
 
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.CircularProgressIndicator
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.livedata.observeAsState
@@ -18,16 +19,16 @@ import com.example.ctf240521.viewmodel.RegisterViewModel
 import com.example.ctf240521.viewmodel.TextFieldState
 
 @Composable
-fun RegisterScreen(navController: NavHostController,vm: RegisterViewModel= viewModel()){
+fun LoginScreen(navController: NavHostController,vm: RegisterViewModel= viewModel()){
 
-        val uiState= vm.registerStatus.observeAsState()
-        Register(navController,vm)
+        val uiState= vm.loginStatus.observeAsState()
+        Login(navController,vm)
         uiState.value?.let {
                 when(uiState.value?.status){
                         Status.SUCCESS -> {
                                 Toast.makeText(
                                         LocalContext.current,
-                                        uiState.value?.data ?: "successfully registered",
+                                        uiState.value?.data ?: "successfully logged in",
                                         Toast.LENGTH_SHORT
                                 )
                                         .show()
@@ -45,13 +46,12 @@ fun RegisterScreen(navController: NavHostController,vm: RegisterViewModel= viewM
                         }
                 }
         }
-        Text("Register Screen Hmm LOL")
+        Text("Login Screen Hmm LOL")
 }
 @Composable
-fun Register(navController: NavHostController, vm: RegisterViewModel) {
-        val usernameState= remember{ TextFieldState() }
-        val passwordState= remember{ TextFieldState() }
-        val repeatPasswordState= remember{ TextFieldState() }
+fun Login(navController: NavHostController, vm: RegisterViewModel) {
+        var usernameState= remember{ TextFieldState() }
+        var passwordState= remember{ TextFieldState() }
         Column(
                 modifier = Modifier.fillMaxSize().padding(bottom=20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
@@ -60,11 +60,9 @@ fun Register(navController: NavHostController, vm: RegisterViewModel) {
                 UsernameField(usernameState)
                 Spacer(Modifier.size(7.dp))
                 PasswordField(passwordState)
-                Spacer(Modifier.size(7.dp))
-                RepeatePasswordField(repeatPasswordState)
                 Spacer(Modifier.size(40.dp))
-                RegisterButton("Register",onValidate={
-                        vm.registerUser(usernameState.text,passwordState.text,repeatPasswordState.text)
+                RegisterButton("Login",onValidate={
+                        vm.loginUser(usernameState.text,passwordState.text)
                 })
                 Spacer(modifier = Modifier.padding(24.dp))
                 SwitchTOLoginOrRegisterTexts(
@@ -72,9 +70,9 @@ fun Register(navController: NavHostController, vm: RegisterViewModel) {
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp),
                         text1 = "Don't have an account yet?",
-                        text2 = "Login"
+                        text2 = "Register"
                 ) {
-                        navController.navigate("LoginRoute"){
+                        navController.navigate("RegisterRoute"){
                                 navController.graph.startDestinationRoute?.let {
                                         popUpTo(it){
                                                 saveState=true

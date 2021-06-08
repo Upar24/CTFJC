@@ -14,13 +14,25 @@ class PostRepository @Inject constructor(
     private val postApi: PostApi,
     private val context: Application
 ){
+    suspend fun login(email: String, password:String)= withContext(Dispatchers.IO){
+        try{
+            val response= postApi.login(AccountRequest(email,password))
+            if(response.isSuccessful && response.body()!!.successful){
+                Resource.success(response.body()?.message)
+            }else{
+                Resource.error(response.body()?.message ?: response.message(),null)
+            }
+        }catch (e:Exception){
+            Resource.error("Couldnt connect to the server, check your internet connection",null)
+        }
+    }
     suspend fun register(email: String, password:String)= withContext(Dispatchers.IO){
         try{
             val response= postApi.register(AccountRequest(email,password))
-            if(response.isSuccessful){
+            if(response.isSuccessful && response.body()!!.successful ){
                 Resource.success(response.body()?.message)
             }else{
-                Resource.error(response.message(),null)
+                Resource.error(response.body()?.message ?: response.message(),null)
             }
         }catch (e:Exception){
             Resource.error("Couldnt connect to the server, check your internet connection",null)

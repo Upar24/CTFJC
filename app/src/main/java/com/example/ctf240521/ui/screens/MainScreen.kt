@@ -139,10 +139,13 @@ fun MainScreenNavigationConfiguration(
         composable(BottomNavigationScreens.Ask.route){
             SectionScreen()
         }
-        composable("Login"){backStackEntry ->
+        composable("LoginRoute"){backStackEntry ->
             val registerViewModel = hiltViewModel<RegisterViewModel>()
-            RegisterScreen(registerViewModel)
+            LoginScreen(navController,registerViewModel)
         }
-
+        composable("RegisterRoute"){backStackEntry ->
+            val registerViewModel = hiltViewModel<RegisterViewModel>()
+            RegisterScreen(navController,registerViewModel)
+        }
     }
 }

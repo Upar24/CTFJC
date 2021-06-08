@@ -171,7 +171,7 @@ fun AppdrawerFooter(
         Button(
             onClick = {
                 closeDrawerAction()
-                navController.navigate("Login"){
+                navController.navigate("LoginRoute"){
                     navController.graph.startDestinationRoute?.let {
                         popUpTo(it){
                             saveState=true
