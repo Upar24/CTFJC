@@ -12,7 +12,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 
 @Composable
-public fun MyAlertDialog(){
+fun MyAlertDialog(){
     val shouldShowDialog= remember{ mutableStateOf(true)}
     if(shouldShowDialog.value){
         AlertDialog(

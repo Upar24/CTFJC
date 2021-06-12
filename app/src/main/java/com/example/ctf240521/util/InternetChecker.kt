@@ -17,6 +17,7 @@ fun checkForInternetConnection(context: Context):Boolean{
             capabilities.hasTransport(NetworkCapabilities.TRANSPORT_VPN) -> true
             else -> false
         }
-    }
+    }else{
     return connectivityManager.activeNetworkInfo?.isAvailable ?: false
+        }
 }

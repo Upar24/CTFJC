@@ -5,26 +5,29 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.focus.focusModifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.compose.currentBackStackEntryAsState
 import com.example.ctf240521.R
-import com.example.ctf240521.ui.screens.BottomNavigationScreens
-import com.example.ctf240521.ui.theme.Blue100
+import com.example.ctf240521.ui.screens.*
+import com.example.ctf240521.util.Constants
+import com.example.ctf240521.util.Constants.KEY_LOGGED_IN_USERNAME
+import com.example.ctf240521.util.Constants.LOGIN
+import com.example.ctf240521.util.Constants.LOGOUT
+import com.example.ctf240521.util.Constants.NO_PASSWORD
+import com.example.ctf240521.util.Constants.NO_USERNAME
+import com.example.ctf240521.viewmodel.RegisterViewModel
+
 
 @Composable
 fun CTFAppDrawerNavigation(
@@ -39,6 +42,7 @@ fun CTFAppDrawerNavigation(
             .fillMaxSize()
             .background(color = MaterialTheme.colors.surface)
     ){
+
         AppdrawerHeader(closeDrawerAction)
         Divider()
         AppdrawerBody(closeDrawerAction,navController,items)
@@ -46,11 +50,12 @@ fun CTFAppDrawerNavigation(
         Text(text="CTF Section",Modifier.padding(start=16.dp))
         AppdrawerBody(closeDrawerAction, navController, chatItems )
         Divider()
-        AppdrawerFooter(closeDrawerAction,navController)
+        AppdrawerFooter(navController,closeDrawerAction)
     }
 }
 @Composable
-fun AppdrawerHeader(closeDrawerAction: () -> Unit) {
+fun AppdrawerHeader(closeDrawerAction: () -> Unit
+                    ) {
     Column(
         modifier = Modifier
             .fillMaxWidth()
@@ -101,7 +106,7 @@ fun AppdrawerHeader(closeDrawerAction: () -> Unit) {
                     contentDescription = "Foto Profile"
                 )
                 Text(
-                    text="Username",//stringResource(R.string.default_username)
+                    text="Username",//sharedPref
                     style=TextStyle(fontSize = 20.sp),
                     modifier=Modifier.padding(bottom=5.dp),
                     color= MaterialTheme.colors.primaryVariant
@@ -118,8 +123,8 @@ fun AppdrawerBody(
     navController: NavHostController,
     items: List<BottomNavigationScreens>
 ) {
-    val navBackStackEntry by navController.currentBackStackEntryAsState()
-    val currentRoute= navBackStackEntry?.destination?.route
+//    val navBackStackEntry by navController.currentBackStackEntryAsState()
+//    val currentRoute= navBackStackEntry?.destination?.route
     items.forEach {item ->
         Row(
             modifier = Modifier
@@ -146,9 +151,11 @@ fun AppdrawerBody(
 }
 @Composable
 fun AppdrawerFooter(
-    closeDrawerAction: () -> Unit,
-    navController: NavHostController
+    navController: NavHostController,
+    closeDrawerAction: () -> Unit
 ){
+
+    val vm = hiltViewModel<RegisterViewModel>()
     Row(
         modifier= Modifier
             .fillMaxWidth()
@@ -157,6 +164,9 @@ fun AppdrawerFooter(
         verticalAlignment = Alignment.CenterVertically
     )
     {
+        val desc: String by mutableStateOf(if((vm.sharedPref.getString(KEY_LOGGED_IN_USERNAME,NO_USERNAME) == NO_USERNAME))LOGIN else LOGOUT)
+
+
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
@@ -164,13 +174,15 @@ fun AppdrawerFooter(
                 .clickable { }
                 .padding(10.dp)
         ){
+            Text(text = desc +  (vm.sharedPref.getString(KEY_LOGGED_IN_USERNAME,NO_USERNAME) ?: NO_USERNAME))
             Icon(painter = painterResource(id = R.drawable.yinyang), contentDescription ="theme",
             )
             Text("Theme")
         }
         Button(
             onClick = {
-                closeDrawerAction()
+                      closeDrawerAction()
+                if(desc==LOGIN){
                 navController.navigate("LoginRoute"){
                     navController.graph.startDestinationRoute?.let {
                         popUpTo(it){
@@ -180,10 +192,14 @@ fun AppdrawerFooter(
                     launchSingleTop=true
                     restoreState=true
                 }
-            }
-            ,
-            colors= ButtonDefaults.textButtonColors(backgroundColor = Color.Blue)) {
-            Text(text="Login")
+            }else{
+                    vm.sharedPref.edit().putString(KEY_LOGGED_IN_USERNAME,NO_USERNAME).apply()
+                    vm.sharedPref.edit().putString(Constants.KEY_LOGGED_IN_PASSWORD, NO_PASSWORD).apply()
+                    navController.navigate("Home")
+                }
+            },
+            colors = ButtonDefaults.textButtonColors(backgroundColor = Color.Blue)) {
+            Text(text=desc)
         }
     }
 }

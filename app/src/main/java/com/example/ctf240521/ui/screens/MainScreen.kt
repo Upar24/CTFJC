@@ -75,16 +75,17 @@ fun MainScreen(){
         },
         scaffoldState=scaffoldState,
         drawerContent={
-            CTFAppDrawerNavigation (
-                closeDrawerAction = {
-                    coroutineScope.launch {
-                        scaffoldState.drawerState.close()
-                    }
-                },
-                navController=navController,
-                items = drawerNavigationItems,
-                chatItems = sectionItems,
-                    )
+                CTFAppDrawerNavigation (
+                    closeDrawerAction = {
+                        coroutineScope.launch {
+                            scaffoldState.drawerState.close()
+                        }
+                    },
+                    navController =navController,
+                    items = drawerNavigationItems,
+                    chatItems = sectionItems
+                )
+
 
         },
         bottomBar ={
@@ -104,7 +105,8 @@ fun MainScreenNavigationConfiguration(
 ){
     NavHost(navController, startDestination = BottomNavigationScreens.Home.route){
         composable(BottomNavigationScreens.Home.route){
-            HomeScreen()
+            val registerViewModel = hiltViewModel<RegisterViewModel>()
+            HomeScreen(registerViewModel)
         }
         composable(BottomNavigationScreens.Party.route){
             PartyScreen()
@@ -139,11 +141,11 @@ fun MainScreenNavigationConfiguration(
         composable(BottomNavigationScreens.Ask.route){
             SectionScreen()
         }
-        composable("LoginRoute"){backStackEntry ->
+        composable("LoginRoute"){
             val registerViewModel = hiltViewModel<RegisterViewModel>()
             LoginScreen(navController,registerViewModel)
         }
-        composable("RegisterRoute"){backStackEntry ->
+        composable("RegisterRoute"){
             val registerViewModel = hiltViewModel<RegisterViewModel>()
             RegisterScreen(navController,registerViewModel)
         }

@@ -1,21 +1,22 @@
 package com.example.ctf240521.viewmodel
 
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.material.Text
+import android.content.SharedPreferences
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.*
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import androidx.lifecycle.viewmodel.compose.viewModel
+import com.example.ctf240521.data.remote.BasicAuthInterceptor
 import com.example.ctf240521.repository.PostRepository
-import com.example.ctf240521.ui.component.PasswordField
+import com.example.ctf240521.util.Constants
+import com.example.ctf240521.util.Constants.KEY_LOGGED_IN_PASSWORD
+import com.example.ctf240521.util.Constants.KEY_LOGGED_IN_USERNAME
+import com.example.ctf240521.util.Constants.LOGIN
+import com.example.ctf240521.util.Constants.LOGOUT
+import com.example.ctf240521.util.Constants.NO_PASSWORD
+import com.example.ctf240521.util.Constants.NO_USERNAME
 import com.example.ctf240521.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -25,6 +26,13 @@ import javax.inject.Inject
 class RegisterViewModel @Inject constructor (
     private val repository: PostRepository
 ):ViewModel(){
+    @Inject
+    lateinit var sharedPref: SharedPreferences
+    @Inject
+    lateinit var basicAuthInterceptor: BasicAuthInterceptor
+    var usernamevm: String?= null
+    var passwordvm: String?= null
+
     private val _registerStatus = MutableLiveData<Resource<String>>()
     val registerStatus : LiveData<Resource<String>> = _registerStatus
 
@@ -38,6 +46,8 @@ class RegisterViewModel @Inject constructor (
             return
         }
         viewModelScope.launch{
+            usernamevm=username
+            passwordvm=password
             val result= repository.login(username,password)
             _loginStatus.postValue(result)
         }
@@ -58,8 +68,18 @@ class RegisterViewModel @Inject constructor (
         _registerStatus.postValue(result)
     }
     }
+    fun isLoggedIn():Boolean{
+        usernamevm=sharedPref.getString(KEY_LOGGED_IN_USERNAME,NO_USERNAME) ?: NO_USERNAME
+        passwordvm=sharedPref.getString(KEY_LOGGED_IN_PASSWORD, NO_PASSWORD) ?: NO_PASSWORD
+        return usernamevm!= NO_USERNAME && passwordvm != NO_PASSWORD
+    }
+    fun authenticateApi(username:String, password: String){
+        basicAuthInterceptor.username=username
+        basicAuthInterceptor.password=password
+    }
+
 }
-class TextFieldState(){
+class TextFieldState{
     var text : String by mutableStateOf("")
 }
 

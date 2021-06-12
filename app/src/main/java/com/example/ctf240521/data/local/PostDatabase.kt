@@ -7,7 +7,8 @@ import com.example.ctf240521.data.local.entities.Post
 
 @Database(
     entities = [Post::class],
-    version = 1
+    version = 1,
+    exportSchema = false
 )
 @TypeConverters(Converters::class)
 abstract class PostDatabase : RoomDatabase(){
