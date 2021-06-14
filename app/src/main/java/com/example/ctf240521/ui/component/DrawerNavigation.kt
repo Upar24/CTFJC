@@ -34,8 +34,7 @@ fun CTFAppDrawerNavigation(
     modifier: Modifier = Modifier,
     closeDrawerAction: () -> Unit,
     navController: NavHostController,
-    items:List<BottomNavigationScreens>,
-    chatItems:List<BottomNavigationScreens>
+    items:List<BottomNavigationScreens>
 ){
     Column(
         modifier= modifier
@@ -46,9 +45,6 @@ fun CTFAppDrawerNavigation(
         AppdrawerHeader(closeDrawerAction)
         Divider()
         AppdrawerBody(closeDrawerAction,navController,items)
-        Divider()
-        Text(text="CTF Section",Modifier.padding(start=16.dp))
-        AppdrawerBody(closeDrawerAction, navController, chatItems )
         Divider()
         AppdrawerFooter(navController,closeDrawerAction)
     }

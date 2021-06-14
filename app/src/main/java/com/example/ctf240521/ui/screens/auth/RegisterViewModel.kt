@@ -8,15 +8,14 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.example.ctf240521.data.local.entities.Post
 import com.example.ctf240521.data.remote.BasicAuthInterceptor
 import com.example.ctf240521.repository.PostRepository
-import com.example.ctf240521.util.Constants
 import com.example.ctf240521.util.Constants.KEY_LOGGED_IN_PASSWORD
 import com.example.ctf240521.util.Constants.KEY_LOGGED_IN_USERNAME
-import com.example.ctf240521.util.Constants.LOGIN
-import com.example.ctf240521.util.Constants.LOGOUT
 import com.example.ctf240521.util.Constants.NO_PASSWORD
 import com.example.ctf240521.util.Constants.NO_USERNAME
+import com.example.ctf240521.util.Event
 import com.example.ctf240521.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -77,7 +76,6 @@ class RegisterViewModel @Inject constructor (
         basicAuthInterceptor.username=username
         basicAuthInterceptor.password=password
     }
-
 }
 class TextFieldState{
     var text : String by mutableStateOf("")

@@ -38,8 +38,11 @@ interface PostApi {
         @Body addCommentRequest: AddCommentRequest
     ):Response<SimpleResponse>
 
-    @GET("/getPosts")
-    suspend fun getPosts():Response<List<Post>>
+    @GET("/getAllPosts")
+    suspend fun getAllPosts():Response<List<Post>>
+
+    @GET("/getFollowingPosts")
+    suspend fun getFollowingPosts(username:String):Response<List<Post>>
 }
 
 

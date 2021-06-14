@@ -1,5 +1,6 @@
 package com.example.ctf240521.ui.screens
 
+import android.content.SharedPreferences
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.Text
@@ -12,25 +13,38 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import com.example.ctf240521.data.remote.BasicAuthInterceptor
 import com.example.ctf240521.ui.component.*
+import com.example.ctf240521.util.Constants.KEY_LOGGED_IN_PASSWORD
+import com.example.ctf240521.util.Constants.KEY_LOGGED_IN_USERNAME
+import com.example.ctf240521.util.Constants.NO_PASSWORD
+import com.example.ctf240521.util.Constants.NO_USERNAME
 import com.example.ctf240521.util.Status
 import com.example.ctf240521.viewmodel.RegisterViewModel
 import com.example.ctf240521.viewmodel.TextFieldState
+import timber.log.Timber
 
 @Composable
-fun RegisterScreen(navController: NavHostController,vm: RegisterViewModel= viewModel()){
-
-        val uiState= vm.registerStatus.observeAsState()
-        Register(navController,vm)
+fun LoginScreen(
+        navController: NavHostController,
+        vm: RegisterViewModel= viewModel()
+){
+        val uiState= vm.loginStatus.observeAsState()
+        Login(navController,vm)
         uiState.value?.let {
-                when(uiState.value?.status){
+                        when(uiState.value?.status){
                         Status.SUCCESS -> {
                                 Toast.makeText(
                                         LocalContext.current,
-                                        uiState.value?.data ?: "successfully registered",
+                                        uiState.value?.data ?: "successfully logged in",
                                         Toast.LENGTH_SHORT
                                 )
                                         .show()
+                                vm.sharedPref.edit().putString(KEY_LOGGED_IN_USERNAME,vm.usernamevm).apply()
+                                vm.sharedPref.edit().putString(KEY_LOGGED_IN_PASSWORD,vm.passwordvm).apply()
+                                vm.authenticateApi(vm.usernamevm ?: "", vm.passwordvm ?: "")
+                                navController.navigate("Home")
+                                Timber.d("Called")
                         }
                         Status.ERROR -> {
                                 Toast.makeText(
@@ -45,26 +59,27 @@ fun RegisterScreen(navController: NavHostController,vm: RegisterViewModel= viewM
                         }
                 }
         }
-        Text("Register Screen Hmm LOL")
+        Text("Login Screen Hmm LOL ${vm.passwordvm} ${vm.usernamevm} " +
+                (vm.sharedPref.getString(KEY_LOGGED_IN_USERNAME,NO_USERNAME) ?: NO_USERNAME)
+        )
 }
 @Composable
-fun Register(navController: NavHostController, vm: RegisterViewModel) {
+fun Login(navController: NavHostController, vm: RegisterViewModel) {
         val usernameState= remember{ TextFieldState() }
         val passwordState= remember{ TextFieldState() }
-        val repeatPasswordState= remember{ TextFieldState() }
         Column(
-                modifier = Modifier.fillMaxSize().padding(bottom=20.dp),
+                modifier = Modifier
+                        .fillMaxSize()
+                        .padding(bottom = 20.dp),
                 horizontalAlignment = Alignment.CenterHorizontally
         ){
                 Spacer(Modifier.size(70.dp))
-                UsernameField(usernameState)
+                TextFieldOutlined("Username",usernameState)
                 Spacer(Modifier.size(7.dp))
-                PasswordField(passwordState)
-                Spacer(Modifier.size(7.dp))
-                RepeatePasswordField(repeatPasswordState)
+                TextFieldOutlined("Password",passwordState)
                 Spacer(Modifier.size(40.dp))
-                RegisterButton("Register",onValidate={
-                        vm.registerUser(usernameState.text,passwordState.text,repeatPasswordState.text)
+                ButtonClickItem("Login",onValidate={
+                        vm.loginUser(usernameState.text,passwordState.text)
                 })
                 Spacer(modifier = Modifier.padding(24.dp))
                 SwitchTOLoginOrRegisterTexts(
@@ -72,9 +87,9 @@ fun Register(navController: NavHostController, vm: RegisterViewModel) {
                                 .fillMaxWidth()
                                 .padding(horizontal = 16.dp),
                         text1 = "Don't have an account yet?",
-                        text2 = "Login"
+                        text2 = "Register"
                 ) {
-                        navController.navigate("LoginRoute"){
+                        navController.navigate("RegisterRoute"){
                                 navController.graph.startDestinationRoute?.let {
                                         popUpTo(it){
                                                 saveState=true

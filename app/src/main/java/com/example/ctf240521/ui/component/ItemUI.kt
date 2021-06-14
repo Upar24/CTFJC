@@ -70,49 +70,17 @@ fun SwitchTOLoginOrRegisterTexts(
     }
 }
 @Composable
-fun TextFieldItem(lol:String) {
-    val textValue = remember { mutableStateOf("") }
+fun TextFieldOutlined(desc:String,state: TextFieldState = remember {TextFieldState()}){
     OutlinedTextField(
-        label={Text(text=lol)},
-        value = textValue.value,
+        label={Text(text=desc)},
+        value =state.text,
         onValueChange = {
-            textValue.value = it
-        },
-    )
-}
-@Composable
-fun UsernameField(usernameState: TextFieldState = remember {TextFieldState()}){
-    OutlinedTextField(
-        label={Text(text="Username")},
-        value =usernameState.text,
-        onValueChange = {
-            usernameState.text = it
+            state.text = it
         }
     )
 }
 @Composable
-fun PasswordField(passwordState: TextFieldState = remember {TextFieldState()}){
-    OutlinedTextField(
-        label={Text(text="Password")},
-        value =passwordState.text,
-        onValueChange = {
-            passwordState.text = it
-        }
-    )
-}
-@Composable
-fun RepeatePasswordField(repeatePasswordState: TextFieldState = remember {TextFieldState()}){
-    OutlinedTextField(
-        label={Text(text="Repeat Password")},
-        value =repeatePasswordState.text,
-        onValueChange = {
-            repeatePasswordState.text = it
-        }
-    )
-}
-
-@Composable
-fun RegisterButton(desc: String,onValidate: () -> Unit) {
+fun ButtonClickItem(desc: String,onValidate: () -> Unit) {
     Button(
         onClick =  onValidate
     ){

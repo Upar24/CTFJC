@@ -22,8 +22,6 @@ fun MyAlertDialog(){
             title= { Text(text="Login",modifier = Modifier.padding(8.dp)) },
             text={
                 Column(modifier = Modifier.padding(8.dp)) {
-                    TextFieldItem("Username")
-                    TextFieldItem("Password")
                 }
             },
             confirmButton = {
