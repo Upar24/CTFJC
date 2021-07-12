@@ -4,6 +4,6 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 
 @Composable
-fun SectionScreen(){
-    Text("Section Screen Hmm LOL")
+fun SupportScreen(){
+    Text("Support Screen Hmm LOL")
 }

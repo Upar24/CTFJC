@@ -14,7 +14,6 @@ class MainActivity : ComponentActivity() {
         setContent {
             CTF240521Theme {
                     MainScreen()
-
             }
         }
     }

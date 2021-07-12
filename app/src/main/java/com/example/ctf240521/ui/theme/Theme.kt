@@ -1,39 +1,46 @@
 package com.example.ctf240521.ui.theme
 
-import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.darkColors
 import androidx.compose.material.lightColors
-import androidx.compose.runtime.Composable
+import androidx.compose.runtime.*
+import androidx.compose.ui.graphics.Color
 
 private val DarkColorPalette = darkColors(
-    primary = Purple200,
-    primaryVariant = Purple700,
-    secondary = Teal200
+    primary =blue8,
+    primaryVariant =blue7,
+    secondary = blue9,
+    secondaryVariant=blue6,
+    background = blue11,
+    surface = blue7,
+    error= Color.Red,
+    onPrimary = blue1,
+    onSecondary = blue0,
+    onBackground = blue4,
+    onSurface = blue1,
+    onError = blue12
 )
-
 private val LightColorPalette = lightColors(
-    primary = Blue100,
-    primaryVariant = Purple700,
-    secondary = Teal200
-
-    /* Other default colors to override
-    background = Color.White,
-    surface = Color.White,
-    onPrimary = Color.White,
-    onSecondary = Color.Black,
-    onBackground = Color.Black,
-    onSurface = Color.Black,
-    */
+    primary = blue4,
+    primaryVariant = blue8,
+    secondary = blue5,
+    secondaryVariant = blue6,
+    background = white,
+    surface = blue7,
+    error = Color.Red,
+    onPrimary = blue11,
+    onSecondary = blue12,
+    onBackground = blue12,
+    onSurface = blue11,
+    onError = blue3
 )
 
 @Composable
-fun CTF240521Theme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
-    val colors = if (darkTheme) {
-        DarkColorPalette
-    } else {
-        LightColorPalette
-    }
+fun CTF240521Theme(
+    isDark: Boolean =ThemeState.darkModeState,
+    content: @Composable () -> Unit
+) {
+    val colors = if(isDark) DarkColorPalette else LightColorPalette
 
     MaterialTheme(
         colors = colors,
@@ -41,4 +48,7 @@ fun CTF240521Theme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composa
         shapes = Shapes,
         content = content
     )
+}
+object ThemeState{
+    var darkModeState by mutableStateOf(true)
 }
