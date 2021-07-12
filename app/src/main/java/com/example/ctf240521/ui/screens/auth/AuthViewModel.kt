@@ -22,7 +22,7 @@ import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class RegisterViewModel @Inject constructor (
+class AuthViewModel @Inject constructor (
     private val repository: PostRepository
 ):ViewModel(){
     @Inject
@@ -31,6 +31,7 @@ class RegisterViewModel @Inject constructor (
     lateinit var basicAuthInterceptor: BasicAuthInterceptor
     var usernamevm: String?= null
     var passwordvm: String?= null
+
 
     private val _registerStatus = MutableLiveData<Resource<String>>()
     val registerStatus : LiveData<Resource<String>> = _registerStatus
@@ -76,9 +77,6 @@ class RegisterViewModel @Inject constructor (
         basicAuthInterceptor.username=username
         basicAuthInterceptor.password=password
     }
-}
-class TextFieldState{
-    var text : String by mutableStateOf("")
 }
 
 

@@ -1,8 +1,17 @@
 package com.example.ctf240521.ui.theme
 
 import androidx.compose.ui.graphics.Color
-
-val Purple200 = Color(0xFFBB86FC)
-val Blue100 = Color(0xFFF44336)
-val Purple700 = Color(0xFF3700B3)
-val Teal200 = Color(0xFF03DAC5)
+val white = Color(0xFFE8F5FC)
+val blue0 = Color(0xFFE7F5FC)
+val blue1 = Color(0xFFEBF8FF)
+val blue2 = Color(0XFFC2EAFF)
+val blue3 = Color(0xFFc2eaff)
+val blue4 = Color(0xFF99ddff)
+val blue5 = Color(0xFF70cfff)
+val blue6 = Color(0xFF47c2ff)
+val blue7 =Color(0xFF00a3f5)
+val blue8 = Color(0xFF0088cc)
+val blue9 = Color(0xFF006da3)
+val blue10 = Color(0xFF00527a)
+val blue11 = Color(0xFF00293d)
+val blue12 = Color(0xFF00293d)
