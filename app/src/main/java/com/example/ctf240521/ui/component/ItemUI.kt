@@ -67,13 +67,14 @@ fun SwitchTOLoginOrRegisterTexts(
     }
 }
 @Composable
-fun TextFieldOutlined(desc:String,state: TextFieldState = remember {TextFieldState()}){
+fun TextFieldOutlined(desc:String,state: TextFieldState = remember {TextFieldState()},modifier: Modifier=Modifier.height(36.dp)){
     OutlinedTextField(
         label={Text(text=desc)},
         value =state.text,
         onValueChange = {
             state.text = it
-        }
+        },
+        modifier=modifier
     )
 }
 @Composable
@@ -177,7 +178,8 @@ fun ChatCard(){
 
             Row(
                 Modifier
-                    .fillMaxWidth().padding(6.dp)){
+                    .fillMaxWidth()
+                    .padding(6.dp)){
                 Row(Modifier.weight(1f)) {
                     Text("UsernameUsernameUsernameUsernameUsernameUsernameUsernameUsername",Modifier.fillMaxWidth())
                 }
@@ -196,8 +198,73 @@ fun ChatCard(){
         }
     }
 }
+@Composable
+fun TradingCard() {
+    Card(
+        border = BorderStroke(1.dp, MaterialTheme.colors.onSurface),
+        shape = RoundedCornerShape(8.dp),
+        backgroundColor = MaterialTheme.colors.secondary
+    ) {
+        Column(Modifier.padding(6.dp)) {
+
+            Row(
+                Modifier
+                    .fillMaxWidth()
+            ) {
+                Row(Modifier.weight(1f)) {
+                    Text(
+                        "UsernameUsernameUsernameUsernameUsernameUsernameUsernameUsername",
+                        Modifier.fillMaxWidth()
+                    )
+                }
+                Row(Modifier.weight(1f)) {
+                    Text(
+                        "UsernameUsernameUsernameUsernameUsernameUsernameUsernameUsername",
+                        Modifier.fillMaxWidth()
+                    )
+                }
+                Spacer(Modifier.padding(3.dp))
+                Row(Modifier.weight(1f)) {
+                    Text(
+                        "UsernameUsernameUsernameUsernameUsernameUsernameUsernameUsername",
+                        Modifier.fillMaxWidth()
+                    )
+                }
+            }
+            DividerItem()
+            Text("title", style = MaterialTheme.typography.caption)
+            Text("Heres your title trading", textAlign = TextAlign.Justify)
+            Text("description", style = MaterialTheme.typography.caption)
+            Text("Heres your description trading", textAlign = TextAlign.Justify)
+            Text("Buying", style = MaterialTheme.typography.caption)
+            Text("8 papers")
+            Text("For", style = MaterialTheme.typography.caption)
+            Text("8 papers")
+        }
+    }
+}
+@Composable
+fun WallCard() {
+    Card(
+        border = BorderStroke(1.dp, MaterialTheme.colors.onSurface),
+        shape = RoundedCornerShape(8.dp),
+        backgroundColor = MaterialTheme.colors.secondary
+    ) {
+        Column {
+            Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween, Alignment.CenterVertically) {
+                Text("Username")
+                Text("Date")
+            }
+            DividerItem()
+            Row(Modifier.fillMaxWidth(),Arrangement.SpaceBetween) {
+                Text("Description to their message")
+                ButtonClickItem(desc = "Wall", onClick = {})
+            }
+        }
+    }
+}
 @Preview
 @Composable
 fun x(){
-    ChatCard()
+    WallCard()
 }

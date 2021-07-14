@@ -1,6 +1,9 @@
 package com.example.ctf240521.ui.screens
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.material.Tab
+import androidx.compose.material.TabRow
+import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.*
@@ -17,32 +20,28 @@ fun HomeScreen(
     authVM: AuthViewModel = viewModel(),
     postVM: PostViewModel = viewModel(),
 ) {
-    var visibleProperty by remember { mutableStateOf("")}
+    var visibleHome by remember { mutableStateOf("party")}
     Column(
         Modifier
             .fillMaxSize()
             .padding(start = 3.dp, end = 3.dp, top = 3.dp, bottom = 60.dp)
     ) {
-        Row (Modifier.fillMaxWidth(),Arrangement.SpaceEvenly){
-            ButtonClickItem(
-                desc = "Party",
-                onClick = {visibleProperty = "party"},
-                warna = if (visibleProperty == "party") Color.Magenta else Color.Unspecified
-            )
-            ButtonClickItem(
-                desc = "Calculation",
-                onClick = { visibleProperty = "calc" },
-                warna = if (visibleProperty == "calc") Color.Magenta else Color.Unspecified
-            )
-            ButtonClickItem(
-                desc = "Chat",
-                onClick = { visibleProperty = "chat" },
-                warna = if (visibleProperty == "chat") Color.Magenta else Color.Unspecified
-            )
+        var tabIndex by remember { mutableStateOf(1)}
+        var homeItem = listOf("party","calculation","chat")
+        TabRow(selectedTabIndex = tabIndex,Modifier.fillMaxWidth(),
+            backgroundColor =Color.Transparent) {
+            homeItem.forEachIndexed { index,text ->
+                Tab(selected=tabIndex==index,onClick={
+                    tabIndex=index
+                    visibleHome=text
+                },text={
+                    Text(text,color=if (visibleHome == text) Color.Magenta else Color.Unspecified)
+                })
+            }
         }
-        when(visibleProperty){
+        when(visibleHome){
             "party" -> PartyScreen()
-            "calc" -> CalculationScreen()
+            "calculation" -> CalculationScreen()
             "chat" -> ChatScreen()
         }
     }

@@ -40,7 +40,8 @@ fun CTFAppTopNavigation(
             .background(color = MaterialTheme.colors.onError)
             .padding(start = 12.dp, end = 12.dp)
             .height(45.dp),
-        horizontalArrangement = Arrangement.SpaceBetween
+        horizontalArrangement = Arrangement.SpaceBetween,
+        Alignment.CenterVertically
     ) {
         TopBarItem(onIconClick, modifier = Modifier)
         Image(

@@ -1,53 +1,85 @@
 package com.example.ctf240521.ui.screens
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.material.Divider
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material.*
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.example.ctf240521.R
+import com.example.ctf240521.ui.component.ButtonClickItem
 import com.example.ctf240521.ui.component.ProfileInfoItem
+import com.example.ctf240521.ui.component.WallCard
 
 @Composable
 fun ProfileScreen(){
+    var seeMore by remember { mutableStateOf(false) }
+    var visibleProfile by remember { mutableStateOf("") }
     Column(
         modifier = Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
-    ) {
-        Image(
-            painterResource(id = R.drawable.image),
-            modifier = Modifier
-                .padding(16.dp)
-                .size(100.dp),
-            contentScale = ContentScale.Fit,
-            alignment = Alignment.Center,
-            contentDescription = "Foto Profile"
-        )
-        Text(
-            text="Username",//stringResource(R.string.default_username)
-            color= MaterialTheme.colors.primaryVariant
-        )
-        ProfileInfoItem(number = "8", desc = "days CTF" )
-        Row (modifier= Modifier.fillMaxWidth().padding(start=20.dp,end=20.dp),
-            horizontalArrangement = Arrangement.SpaceBetween
-        ){
-            ProfileInfoItem(number = "12", desc = "Followers")
-            ProfileInfoItem(number = "24", desc = "Following")
+    ){
+        Row(Modifier.fillMaxWidth(),Arrangement.SpaceBetween){
+            Text("Username")
+            Text("Name")
+            Text("IGN")
+            Text("Club Name")
         }
-        Row (modifier= Modifier.fillMaxWidth().padding(start=20.dp,end=20.dp),
-            horizontalArrangement = Arrangement.SpaceBetween){
-            ProfileInfoItem(number = "9", desc = "Days Streak")
-            ProfileInfoItem(number = "6", desc = "CTF Coins")
+        if(seeMore){
+            Text("SomeMore lmao")
+            Text("SomeMore lmao")
+            Text("SomeMore lmao")
+            Text("SomeMore lmao")
+            Text("SomeMore lmao")
+            Text("SomeMore lmao")
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .clickable { seeMore = !seeMore },Arrangement.End){
+                Text("Show Less")
+                Image(
+                    painterResource(id = R.drawable.up_arrow),
+                    contentDescription = "Search Menu",
+                    modifier= Modifier
+                        .height(36.dp)
+                        .clickable { seeMore = !seeMore }
+                )
+            }
+        }else{
+            Row(
+                Modifier
+                    .fillMaxWidth()
+                    .clickable { seeMore = !seeMore },Arrangement.End){
+                Text("Show More")
+                Image(
+                    painterResource(id = R.drawable.down_arrow),
+                    contentDescription = "Search Menu",
+                    modifier= Modifier
+                        .height(36.dp)
+                        .clickable { seeMore = !seeMore }
+                )
+            }
         }
+        Text(visibleProfile)
+        var tabIndex by remember { mutableStateOf(0)}
+        val profileList = listOf("wall","post")
+        TabRow(selectedTabIndex = tabIndex,
+            backgroundColor = Color.Transparent) {
+            profileList.forEachIndexed { index,text ->
+                Tab(selected=tabIndex==index,onClick={
+                    tabIndex=index
+                    visibleProfile=text
+                },text={
+                    Text(text)
+                })
+            }
+        }
+        Spacer(modifier = Modifier.padding(6.dp))
+        WallCard()
     }
-    Divider(
-        color= MaterialTheme.colors.onSurface.copy(alpha=.2f),
-        modifier = Modifier.padding(start = 16.dp,end=16.dp,top=16.dp)
-    )
 }
