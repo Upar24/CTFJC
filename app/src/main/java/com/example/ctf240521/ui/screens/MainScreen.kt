@@ -17,6 +17,11 @@ import com.example.ctf240521.ui.component.*
 import com.example.ctf240521.ui.screens.auth.LoginScreen
 import com.example.ctf240521.ui.screens.auth.RegisterScreen
 import com.example.ctf240521.ui.screens.post.PostViewModel
+import com.example.ctf240521.util.Constants
+import com.example.ctf240521.util.Constants.KEY_LOGGED_IN_USERNAME
+import com.example.ctf240521.util.Constants.LOGIN
+import com.example.ctf240521.util.Constants.LOGOUT
+import com.example.ctf240521.util.Constants.NO_USERNAME
 import com.example.ctf240521.viewmodel.AuthViewModel
 import kotlinx.coroutines.launch
 
@@ -69,7 +74,7 @@ fun MainScreen(){
                                 scaffoldState.drawerState.open()
                             }
                         },
-                        navController,
+                        navController
                     )
                 },
                 scaffoldState=scaffoldState,
@@ -81,7 +86,7 @@ fun MainScreen(){
                             }
                         },
                         navController = navController,
-                        items = drawerNavigationItems
+                        items = drawerNavigationItems,
                     )
                 },
                 bottomBar ={
@@ -134,12 +139,10 @@ fun MainScreenNavigationConfiguration(
             SupportScreen()
         }
         composable("LoginRoute"){
-            val registerViewModel = hiltViewModel<AuthViewModel>()
-            LoginScreen(navController,registerViewModel)
+            LoginScreen(navController)
         }
         composable("RegisterRoute"){
-            val registerViewModel = hiltViewModel<AuthViewModel>()
-            RegisterScreen(navController,registerViewModel)
+            RegisterScreen(navController)
         }
     }
 }

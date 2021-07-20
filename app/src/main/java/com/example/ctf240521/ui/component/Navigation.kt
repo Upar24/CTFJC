@@ -5,9 +5,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -27,6 +26,7 @@ import com.example.ctf240521.util.Constants.LOGIN
 import com.example.ctf240521.util.Constants.LOGOUT
 import com.example.ctf240521.util.Constants.NO_PASSWORD
 import com.example.ctf240521.util.Constants.NO_USERNAME
+import com.example.ctf240521.util.Status
 import com.example.ctf240521.viewmodel.AuthViewModel
 
 @Composable
@@ -68,7 +68,9 @@ fun CTFAppDrawerNavigation(
             .fillMaxSize()
             .background(color = MaterialTheme.colors.background)
     ){
-        AppdrawerHeader(closeDrawerAction)
+        AppdrawerHeader(
+            closeDrawerAction
+        )
         Divider()
         AppdrawerBody(
             closeDrawerAction,
@@ -83,7 +85,8 @@ fun CTFAppDrawerNavigation(
     }
 }
 @Composable
-fun AppdrawerHeader(closeDrawerAction: () -> Unit
+fun AppdrawerHeader(
+    closeDrawerAction: () -> Unit
 ) {
     Column(
         modifier = Modifier
@@ -91,6 +94,8 @@ fun AppdrawerHeader(closeDrawerAction: () -> Unit
             .padding(12.dp),
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        val authVM = hiltViewModel<AuthViewModel>()
+        val username=authVM.sharedPref.getString(KEY_LOGGED_IN_USERNAME,NO_USERNAME) ?: NO_USERNAME
         TopBarItem(
             closeDrawerAction,
             modifier = Modifier
@@ -98,7 +103,7 @@ fun AppdrawerHeader(closeDrawerAction: () -> Unit
         )
         Spacer(modifier = Modifier.padding(12.dp))
         Text(
-            text="Username",
+            text=username,
             style=MaterialTheme.typography.subtitle2
         )
         }
@@ -141,7 +146,8 @@ fun AppdrawerFooter(
     navController: NavHostController,
     closeDrawerAction: () -> Unit
 ){
-    val vm = hiltViewModel<AuthViewModel>()
+    val authVM = hiltViewModel<AuthViewModel>()
+    authVM.getDesc()
     Row(
         modifier= Modifier
             .fillMaxWidth()
@@ -150,13 +156,23 @@ fun AppdrawerFooter(
         verticalAlignment = Alignment.CenterVertically
     )
     {
-        val desc: String by mutableStateOf(if((vm.sharedPref.getString(
-                KEY_LOGGED_IN_USERNAME,NO_USERNAME) == NO_USERNAME))LOGIN else LOGOUT)
+        var x by remember { mutableStateOf(if(authVM.sharedPref.getString(KEY_LOGGED_IN_USERNAME,NO_USERNAME) == NO_USERNAME) LOGIN else LOGOUT)}
+        val descState = authVM.desc.observeAsState()
+        descState.value?.let {
+            when(descState.value?.status){
+                Status.SUCCESS -> {
+                    x = it.data!!
+                }
+                Status.LOADING -> {
+                    ProgressCardToastItem()
+                }
+                Status.ERROR ->{}
+            }
+        }
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier
                 .height(48.dp)
-                .clickable { }
                 .padding(12.dp)
         ){
             Text(
@@ -172,22 +188,24 @@ fun AppdrawerFooter(
             )
             Switch(
                 checked = ThemeState.darkModeState,
-                onCheckedChange = {ThemeState.darkModeState = it}
+                onCheckedChange = { ThemeState.darkModeState = it }
             )
         }
         Button(
             onClick = {
                 closeDrawerAction()
-                if(desc== LOGIN){
-                    navigateRouteFunction(navController,"LoginRoute")
-                }else{
-                    vm.sharedPref.edit().putString(KEY_LOGGED_IN_USERNAME,NO_USERNAME).apply()
-                    vm.sharedPref.edit().putString(KEY_LOGGED_IN_PASSWORD,NO_PASSWORD).apply()
+                if (x == LOGIN) {
+                    navigateRouteFunction(navController, "LoginRoute")
+                    authVM.getDesc()
+                } else {
+                    authVM.sharedPref.edit().putString(KEY_LOGGED_IN_USERNAME, NO_USERNAME).apply()
+                    authVM.sharedPref.edit().putString(KEY_LOGGED_IN_PASSWORD, NO_PASSWORD).apply()
                     navController.navigate("Home")
+                    authVM.getDesc()
                 }
-            },
-            colors = ButtonDefaults.textButtonColors(backgroundColor =MaterialTheme.colors.primary)) {
-            Text(text=desc)
+            }
+        ) {
+            Text(x)
         }
     }
 }

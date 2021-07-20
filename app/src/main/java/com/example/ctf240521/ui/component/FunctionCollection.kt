@@ -6,8 +6,8 @@ import androidx.compose.runtime.setValue
 import androidx.navigation.NavHostController
 
 
-class TextFieldState{
-    var text : String by mutableStateOf("")
+class TextFieldState(string: String=""){
+    var text : String by mutableStateOf(string)
 }
 
 fun navigateRouteFunction(

@@ -67,14 +67,13 @@ fun SwitchTOLoginOrRegisterTexts(
     }
 }
 @Composable
-fun TextFieldOutlined(desc:String,state: TextFieldState = remember {TextFieldState()},modifier: Modifier=Modifier.height(36.dp)){
+fun TextFieldOutlined(desc:String,state: TextFieldState = remember {TextFieldState()}){
     OutlinedTextField(
         label={Text(text=desc)},
         value =state.text,
         onValueChange = {
             state.text = it
-        },
-        modifier=modifier
+        }
     )
 }
 @Composable
@@ -107,36 +106,33 @@ fun CardParty(desc: String){
 @Composable
 fun ProgressBarItem(){
     Row(
-        verticalAlignment =Alignment.Bottom,
+        verticalAlignment =Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,
         modifier = Modifier
-            .fillMaxSize()
-            .padding(bottom = 100.dp)
+            .fillMaxWidth()
+            .padding(24.dp)
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
             CircularProgressIndicator()
             Spacer(Modifier.size(10.dp))
-            Text(
-                text="Please wait.."
-            )
+            Text(text="Please wait..")
         }
-
     }
 }
 @Composable
 fun ProgressCardToastItem(){
     Row(modifier = Modifier
         .fillMaxSize()
-        .padding(5.dp),
+        .padding(6.dp),
         Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
     ){
         Card(
             modifier = Modifier
                 .fillMaxWidth(1f)
-                .padding(10.dp),
+                .padding(12.dp),
             shape= RoundedCornerShape(8.dp),
             backgroundColor = MaterialTheme.colors.primaryVariant
         ){
@@ -158,7 +154,7 @@ fun TopBarItem(onIconClick: () -> Unit,modifier: Modifier){
                 modifier = Modifier
                     .clickable(onClick = onIconClick)
             )
-            Spacer(modifier = Modifier.padding(6.dp))
+            Spacer(modifier = Modifier.padding(12.dp))
             Text(
                 text = "CTForever",
                 color = MaterialTheme.colors.onPrimary,
@@ -175,7 +171,6 @@ fun ChatCard(){
         backgroundColor = MaterialTheme.colors.secondary
     ){
         Column {
-
             Row(
                 Modifier
                     .fillMaxWidth()
@@ -263,8 +258,9 @@ fun WallCard() {
         }
     }
 }
+
 @Preview
 @Composable
-fun x(){
+fun X(){
     WallCard()
 }

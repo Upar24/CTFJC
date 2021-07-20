@@ -32,7 +32,7 @@ fun AddScreen(){
             Modifier
                 .fillMaxWidth()
                 .padding(6.dp),Arrangement.Center,Alignment.CenterVertically){
-            TextFieldOutlined(desc = "Search",searchState,Modifier.height(60.dp))
+            TextFieldOutlined(desc = "Search",searchState)
             Spacer(Modifier.padding(6.dp))
             Image(
                 painterResource(id = R.drawable.search),

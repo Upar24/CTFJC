@@ -1,9 +1,8 @@
 package com.example.ctf240521.data.remote
 
 import com.example.ctf240521.data.local.entities.Post
-import com.example.ctf240521.data.remote.requests.AccountRequest
-import com.example.ctf240521.data.remote.requests.AddCommentRequest
-import com.example.ctf240521.data.remote.requests.IDRequest
+import com.example.ctf240521.data.local.entities.User
+import com.example.ctf240521.data.remote.requests.*
 import com.example.ctf240521.data.remote.response.SimpleResponse
 import okhttp3.ResponseBody
 import retrofit2.Response
@@ -22,6 +21,18 @@ interface PostApi {
     suspend fun login(
         @Body loginRequest: AccountRequest
     ):Response<SimpleResponse>
+
+    @POST("/getuser")
+    suspend fun getUser(
+        @Body oneRequest: OneRequest
+    ):Response<User>
+
+    @POST("updateuser")
+    suspend fun updateProfile(
+        @Body updateUserReq: UpdateUserRequest
+    ):Response<SimpleResponse>
+
+
 
     @POST("/addPost")
     suspend fun addPost(
