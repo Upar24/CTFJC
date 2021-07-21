@@ -10,6 +10,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.example.ctf240521.ui.component.ButtonClickItem
 import com.example.ctf240521.ui.screens.post.PostViewModel
@@ -17,8 +18,6 @@ import com.example.ctf240521.viewmodel.AuthViewModel
 
 @Composable
 fun HomeScreen(
-    authVM: AuthViewModel = viewModel(),
-    postVM: PostViewModel = viewModel(),
 ) {
     var visibleHome by remember { mutableStateOf("party")}
     Column(

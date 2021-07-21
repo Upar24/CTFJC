@@ -146,6 +146,7 @@ fun AppdrawerFooter(
     navController: NavHostController,
     closeDrawerAction: () -> Unit
 ){
+
     val authVM = hiltViewModel<AuthViewModel>()
     authVM.getDesc()
     Row(
@@ -156,19 +157,7 @@ fun AppdrawerFooter(
         verticalAlignment = Alignment.CenterVertically
     )
     {
-        var x by remember { mutableStateOf(if(authVM.sharedPref.getString(KEY_LOGGED_IN_USERNAME,NO_USERNAME) == NO_USERNAME) LOGIN else LOGOUT)}
-        val descState = authVM.desc.observeAsState()
-        descState.value?.let {
-            when(descState.value?.status){
-                Status.SUCCESS -> {
-                    x = it.data!!
-                }
-                Status.LOADING -> {
-                    ProgressCardToastItem()
-                }
-                Status.ERROR ->{}
-            }
-        }
+        val x by authVM.desc.collectAsState()
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier

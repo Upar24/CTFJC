@@ -13,4 +13,5 @@
     <string name="tipstricks_screen_route">Tips &amp; Tricks</string>
     <string name="dictionary_screen_route">Dictionary</string>
     <string name="support_screen_route">Support</string>
+    <string name="otherprofile_screen_route">OtherProfile</string>
 </resources>

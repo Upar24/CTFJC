@@ -2,6 +2,7 @@ package com.example.ctf240521.data.remote
 
 import com.example.ctf240521.data.local.entities.Post
 import com.example.ctf240521.data.local.entities.User
+import com.example.ctf240521.data.local.entities.Wall
 import com.example.ctf240521.data.remote.requests.*
 import com.example.ctf240521.data.remote.response.SimpleResponse
 import okhttp3.ResponseBody
@@ -32,7 +33,20 @@ interface PostApi {
         @Body updateUserReq: UpdateUserRequest
     ):Response<SimpleResponse>
 
+    @POST("/savewall")
+    suspend fun saveWall(
+        @Body wallRequest: WallRequest
+    ):Response<SimpleResponse>
 
+    @POST("/getwall")
+    suspend fun getWall(
+        @Body getRequest : OneRequest
+    ):Response<List<Wall>>
+
+    @POST("/deletewall")
+    suspend fun deleteWall(
+        @Body wall:Wall
+    ):Response<SimpleResponse>
 
     @POST("/addPost")
     suspend fun addPost(

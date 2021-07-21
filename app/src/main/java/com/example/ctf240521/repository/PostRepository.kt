@@ -4,10 +4,12 @@ import android.app.Application
 import androidx.room.Update
 import com.example.ctf240521.data.local.PostDao
 import com.example.ctf240521.data.local.entities.Post
+import com.example.ctf240521.data.local.entities.Wall
 import com.example.ctf240521.data.remote.PostApi
 import com.example.ctf240521.data.remote.requests.AccountRequest
 import com.example.ctf240521.data.remote.requests.OneRequest
 import com.example.ctf240521.data.remote.requests.UpdateUserRequest
+import com.example.ctf240521.data.remote.requests.WallRequest
 import com.example.ctf240521.util.Event
 import com.example.ctf240521.util.Resource
 import kotlinx.coroutines.Dispatchers
@@ -68,6 +70,46 @@ class PostRepository @Inject constructor(
             Resource.error("Couldnt connect to the server", null)
         }
     }
+
+    suspend fun saveWall(wallreq: WallRequest) = withContext(Dispatchers.IO){
+        try{
+            val response = postApi.saveWall(wallreq)
+            if(response.isSuccessful && response.body()!!.successful){
+                Resource.success(response.body()!!.message)
+            }else{
+                Resource.error(response.body()?.message ?: response.message(),null)
+            }
+        }catch (e:Exception){
+            Resource.error("Couldnt connect to the server",null)
+        }
+    }
+    suspend fun getWall(username: String)= withContext(Dispatchers.IO){
+        try {
+            val response=postApi.getWall(OneRequest(username))
+            if(response.isSuccessful){
+                Resource.success(response.body())
+            }else {
+                Resource.error(response.message(),null)
+            }
+        }catch (e:Exception){
+            Resource.error("Couldnt connect to the server",null)
+        }
+    }
+    suspend fun deleteWall(wall: Wall)= withContext(Dispatchers.IO){
+        try {
+            val response=postApi.deleteWall(wall)
+            if(response.isSuccessful && response.body()!!.successful){
+                Resource.success(response.body()!!.message)
+            }else{
+                Resource.error(response.body()?.message ?: response.message(),null)
+            }
+        }catch (e:Exception){
+            Resource.error("Couldnt connect to the server",null)
+        }
+    }
+
+
+
 
     suspend fun getAllPosts() = withContext(Dispatchers.IO) {
         try {

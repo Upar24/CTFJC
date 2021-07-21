@@ -21,7 +21,10 @@ import com.example.ctf240521.util.Constants.NO_PASSWORD
 import com.example.ctf240521.util.Constants.NO_USERNAME
 import com.example.ctf240521.util.Event
 import com.example.ctf240521.util.Resource
+import com.example.ctf240521.util.Status
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -41,13 +44,8 @@ class AuthViewModel @Inject constructor (
     val registerStatus : LiveData<Resource<String>> = _registerStatus
     private val _loginStatus = MutableLiveData<Resource<String>>()
     val loginStatus : LiveData<Resource<String>> = _loginStatus
-    private val _desc=MutableLiveData<Resource<String>>()
-    var desc: LiveData<Resource<String>> = _desc
-    fun getDesc(){
-        val username =if(sharedPref.getString(KEY_LOGGED_IN_USERNAME,NO_USERNAME) == NO_USERNAME) LOGIN else LOGOUT
-        _desc.postValue(Resource.loading(null))
-        _desc.postValue(Resource.success(username))
-    }
+
+
     fun loginUser(username:String,password:String){
         _loginStatus.postValue(Resource.loading(null))
         if(username.isEmpty() || password.isEmpty()){
@@ -94,6 +92,14 @@ class AuthViewModel @Inject constructor (
     fun authenticateApi(username:String, password: String){
         basicAuthInterceptor.username=username
         basicAuthInterceptor.password=password
+    }
+
+    private val _desc= MutableStateFlow("")
+    var desc: StateFlow<String> = _desc
+    fun getDesc()=viewModelScope.launch{
+        isLoggedIn()
+        val username =if(sharedPref.getString(KEY_LOGGED_IN_USERNAME,NO_USERNAME) == NO_USERNAME) LOGIN else LOGOUT
+        _desc.value=username
     }
 }
 

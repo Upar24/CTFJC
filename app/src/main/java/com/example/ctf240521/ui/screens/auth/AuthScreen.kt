@@ -89,6 +89,7 @@ fun LoginScreen(
                 authVM.sharedPref.edit().putString(KEY_LOGGED_IN_USERNAME,authVM.usernamevm).apply()
                 authVM.sharedPref.edit().putString(KEY_LOGGED_IN_PASSWORD,authVM.passwordvm).apply()
                 authVM.authenticateApi(authVM.usernamevm ?: "", authVM.passwordvm ?: "")
+                authVM.getDesc()
                 navController.navigate("Home")
                 Timber.d("Called")
             }
