@@ -8,6 +8,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
+import com.example.ctf240521.ui.component.SearchRefreshItem
 
 @Composable
 fun CalculationScreen(){
@@ -31,5 +32,6 @@ fun CalculationScreen(){
             }
         }
         Text(visibleCalc)
+        SearchRefreshItem(desc = "Search",onClick = {visibleCalc=="TS"})
     }
 }

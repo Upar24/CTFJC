@@ -10,6 +10,7 @@ object Constants{
     const val KEY_LOGGED_IN_PASSWORD = "KEY_LOGGED_IN_PASSWORD"
     const val LOGIN = "Login"
     const val LOGOUT = "Logout"
+    const val NA = "N/A"
     const val ENCRYPTED_SHARED_PREF_NAME = "enc_shared_pref"
     val IGNORE_AUTH_URLS = listOf("/login","/register","/getuser")
 }

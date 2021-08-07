@@ -123,7 +123,7 @@ fun MainScreenNavigationConfiguration(
                 nullable=true
             }
         )){
-            it.arguments?.getString("username")?.let { it1 -> OtherProfileScreen(username = it1,navController) }
+            it.arguments?.getString("username")?.let { it1 -> OtherProfileScreen(it1,navController) }
         }
         composable(BottomNavigationScreens.Add.route){
             AddScreen()

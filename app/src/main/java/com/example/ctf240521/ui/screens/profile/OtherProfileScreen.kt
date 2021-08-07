@@ -16,18 +16,18 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.example.ctf240521.R
 import com.example.ctf240521.data.local.entities.User
 import com.example.ctf240521.data.local.entities.Wall
-import com.example.ctf240521.data.remote.requests.WallRequest
 import com.example.ctf240521.ui.component.*
+import com.example.ctf240521.util.Constants.KEY_LOGGED_IN_USERNAME
+import com.example.ctf240521.util.Constants.NO_USERNAME
 import com.example.ctf240521.util.Status
 import com.example.ctf240521.viewmodel.AuthViewModel
 
 @Composable
-fun OtherProfileScreen(username:String,navController: NavHostController){
+fun OtherProfileScreen(pengguna:String,navController: NavHostController){
     Column(
         Modifier.fillMaxWidth(),
         horizontalAlignment = Alignment.CenterHorizontally
@@ -37,6 +37,8 @@ fun OtherProfileScreen(username:String,navController: NavHostController){
         var user by remember { mutableStateOf(User("Fina","","","","","",0,0,"")) }
         authVM.isLoggedIn()
         authVM.authenticateApi(authVM.usernamevm ?: "", authVM.passwordvm ?: "")
+        val username = authVM.sharedPref.getString(KEY_LOGGED_IN_USERNAME,NO_USERNAME
+        ) ?: NO_USERNAME
         var wallList= listOf<Wall>()
         val uiState=profileVM.user.observeAsState()
         uiState.value?.let {
@@ -56,15 +58,16 @@ fun OtherProfileScreen(username:String,navController: NavHostController){
         }
         val saveWallState=profileVM.saveWallStatus.observeAsState()
         saveWallState.value?.let {
-            when(it.status){
+            val result = it.peekContent()
+            when(result.status){
                 Status.SUCCESS ->{
                     Toast.makeText(
-                        LocalContext.current,it.message ?: "Wall Sent", Toast.LENGTH_SHORT
+                        LocalContext.current,result.message ?: "Wall Sent", Toast.LENGTH_SHORT
                     ).show()
                 }
                 Status.ERROR -> {
                     Toast.makeText(
-                        LocalContext.current,it.message ?: "An unknown error occured", Toast.LENGTH_SHORT
+                        LocalContext.current,result.message ?: "An unknown error occured", Toast.LENGTH_SHORT
                     ).show()
                 }
                 Status.LOADING -> {
@@ -90,15 +93,16 @@ fun OtherProfileScreen(username:String,navController: NavHostController){
         }
         val deleteWallState=profileVM.deleteWallStatus.observeAsState()
         deleteWallState.value?.let {
-            when(it.status){
+            val result = it.peekContent()
+            when(result.status){
                 Status.SUCCESS ->{
                     Toast.makeText(
-                        LocalContext.current,it.message ?: "Wall Deleted", Toast.LENGTH_SHORT
+                        LocalContext.current,result.message ?: "Wall Deleted", Toast.LENGTH_SHORT
                     ).show()
                 }
                 Status.ERROR -> {
                     Toast.makeText(
-                        LocalContext.current,it.message ?: "An unknown error occured", Toast.LENGTH_SHORT
+                        LocalContext.current,result.message ?: "An unknown error occured", Toast.LENGTH_SHORT
                     ).show()
                 }
                 Status.LOADING -> {
@@ -116,7 +120,7 @@ fun OtherProfileScreen(username:String,navController: NavHostController){
 
 
         Row(Modifier.fillMaxWidth(), Arrangement.SpaceBetween) {
-            Text(username)
+            Text(pengguna)
             Text(if (!seeMore) "Show More" else "Show less",
                 modifier = Modifier
                     .height(36.dp)
@@ -125,7 +129,7 @@ fun OtherProfileScreen(username:String,navController: NavHostController){
                             seeMore = !seeMore
                         } else {
                             seeMore = !seeMore
-                            profileVM.getUser(username)
+                            profileVM.getUser(pengguna)
                         }
                     })
             Image(
@@ -138,7 +142,7 @@ fun OtherProfileScreen(username:String,navController: NavHostController){
                             seeMore = !seeMore
                         } else {
                             seeMore = !seeMore
-                            profileVM.getUser(username)
+                            profileVM.getUser(pengguna)
                         }
                     }
             )
@@ -160,7 +164,7 @@ fun OtherProfileScreen(username:String,navController: NavHostController){
                 Tab(selected=tabIndex==index,onClick={
                     tabIndex=index
                     visibleProfile=text
-                    if(text=="wall") profileVM.getWall(username) else {}
+                    if(text=="wall") profileVM.getWall(pengguna)
                 },text={
                     Text(text)
                 })
@@ -172,12 +176,17 @@ fun OtherProfileScreen(username:String,navController: NavHostController){
                 Row(Modifier.fillMaxWidth()){
                     TextFieldOutlined(desc = "Wall",wallDescState)
                     ButtonClickItem(desc = "Send",onClick = {profileVM.saveWall(
-                        WallRequest(wallDescState.text,username)
+                        Wall(
+                            username,
+                            user.name,
+                            user.clubName,
+                            pengguna,
+                            wallDescState.text)
                     )})
                 }
 
                 WallList(wallList,navController)
-                Text("wall $username")
+                Text("wall $pengguna")
             }
         }
         Spacer(modifier = Modifier.padding(6.dp))

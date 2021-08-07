@@ -1,10 +1,9 @@
 package com.example.ctf240521.data.remote
 
-import com.example.ctf240521.data.local.entities.Post
-import com.example.ctf240521.data.local.entities.User
-import com.example.ctf240521.data.local.entities.Wall
+import com.example.ctf240521.data.local.entities.*
 import com.example.ctf240521.data.remote.requests.*
 import com.example.ctf240521.data.remote.response.SimpleResponse
+import com.example.ctf240521.data.remote.response.ToggleResponse
 import okhttp3.ResponseBody
 import retrofit2.Response
 import retrofit2.http.Body
@@ -35,7 +34,7 @@ interface PostApi {
 
     @POST("/savewall")
     suspend fun saveWall(
-        @Body wallRequest: WallRequest
+        @Body wall: Wall
     ):Response<SimpleResponse>
 
     @POST("/getwall")
@@ -48,26 +47,93 @@ interface PostApi {
         @Body wall:Wall
     ):Response<SimpleResponse>
 
-    @POST("/addPost")
-    suspend fun addPost(
-        @Body post: Post
-    ):Response<ResponseBody>
-
-    @POST("/deletePost")
-    suspend fun deletePost(
-        @Body deleteNoteRequest: IDRequest
-    ):Response<ResponseBody>
-
-    @POST("/addCommentToPost")
-    suspend fun addCommentToPost(
-        @Body addCommentRequest: AddCommentRequest
+    @POST("/savechat")
+    suspend fun saveChat(
+        @Body chat:Chat
     ):Response<SimpleResponse>
 
-    @GET("/getAllPosts")
-    suspend fun getAllPosts():Response<List<Post>>
+    @GET("/getchat")
+    suspend fun getChat():Response<List<Chat>>
 
-    @GET("/getFollowingPosts")
-    suspend fun getFollowingPosts(username:String):Response<List<Post>>
+    @POST("/savetrading")
+    suspend fun saveTrading(
+        @Body trading: Trading
+    ):Response<SimpleResponse>
+
+    @POST("/deletetrading")
+    suspend fun deleteTrading(
+        @Body trading:Trading
+    ):Response<SimpleResponse>
+
+    @GET("/getalltrading")
+    suspend fun getAllTrading():Response<List<Trading>>
+
+    @POST("/getallusertrading")
+    suspend fun getAllUserTrading(
+        @Body username:OneRequest
+    ):Response<List<Trading>>
+
+    @POST("/gettrading")
+    suspend fun getTrading(
+        @Body trading: Trading
+    ):Response<Trading>
+
+    @POST("/getbuyingsearch")
+    suspend fun getBuyingSearch(
+        @Body query:OneRequest
+    ):Response<List<Trading>>
+
+    @POST("/getsellingsearch")
+    suspend fun getSellingSearch(
+        @Body query:OneRequest
+    ):Response<List<Trading>>
+
+
+    @POST("/saveparty")
+    suspend fun saveParty(
+        @Body party: Party
+    ):Response<SimpleResponse>
+    @GET("/saveparty")
+    suspend fun getPartyList():Response<List<Party>>
+
+    @POST("/savedrop")
+    suspend fun saveDrop(
+        @Body dropped: Dropped
+    ):Response<SimpleResponse>
+    @GET("/savedrop")
+    suspend fun getDrop():Response<List<Dropped>>
+
+    @POST("/savetoday")
+    suspend fun saveToday(
+        @Body today: Today
+    ):Response<SimpleResponse>
+    @GET("/savetoday")
+    suspend fun getToday():Response<Today>
+
+    @POST("/deletedrop")
+    suspend fun deleteDrop(
+        @Body dropped: Dropped
+    ):Response<SimpleResponse>
+
+    @POST("/togglecheck")
+    suspend fun toggleCheck(
+        @Body party: Party
+    ):Response<ResponseBody>
+
+    @POST("/toggledrop")
+    suspend fun toggleDrop(
+        @Body party: Party
+    ):Response<ResponseBody>
+
+    @POST("/togglenope")
+    suspend fun toggleNope(
+        @Body party: Party
+    ):Response<ResponseBody>
+
+    @POST("/getlistuser")
+    suspend fun getListUser(
+        @Body listUsername:ListStringRequest
+    ):Response<List<User>>
 }
 
 

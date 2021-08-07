@@ -40,47 +40,47 @@ class AuthViewModel @Inject constructor (
     var passwordvm: String?= null
 
 
-    private val _registerStatus = MutableLiveData<Resource<String>>()
-    val registerStatus : LiveData<Resource<String>> = _registerStatus
-    private val _loginStatus = MutableLiveData<Resource<String>>()
-    val loginStatus : LiveData<Resource<String>> = _loginStatus
+    private val _registerStatus = MutableLiveData<Event<Resource<String>>>()
+    val registerStatus : LiveData<Event<Resource<String>>> = _registerStatus
+    private val _loginStatus = MutableLiveData<Event<Resource<String>>>()
+    val loginStatus : LiveData<Event<Resource<String>>> = _loginStatus
 
 
     fun loginUser(username:String,password:String){
-        _loginStatus.postValue(Resource.loading(null))
+        _loginStatus.postValue(Event(Resource.loading(null)))
         if(username.isEmpty() || password.isEmpty()){
-            _loginStatus.postValue(Resource.error("Please fill out all the fields",null))
+            _loginStatus.postValue(Event(Resource.error("Please fill out all the fields",null)))
             return
         }
         viewModelScope.launch{
             usernamevm=username
             passwordvm=password
             val result= repository.login(username,password)
-            _loginStatus.postValue(result)
+            _loginStatus.postValue(Event(result))
         }
     }
 
     fun registerUser(username:String,password:String,repeatedPassword:String){
-        _registerStatus.postValue(Resource.loading(null))
+        _registerStatus.postValue(Event(Resource.loading(null)))
         if(username.isEmpty() || password.isEmpty() || repeatedPassword.isEmpty()){
-            _registerStatus.postValue(Resource.error("Please fill out all the fields",null))
+            _registerStatus.postValue(Event(Resource.error("Please fill out all the fields",null)))
             return
         }
         if(password != repeatedPassword){
-            _registerStatus.postValue(Resource.error("The passwords do not match", null))
+            _registerStatus.postValue(Event(Resource.error("The passwords do not match", null)))
             return
         }
         if(username.length < 3 || password.length < 3){
-            _registerStatus.postValue(Resource.error("must be at least 3 characters.",null))
+            _registerStatus.postValue(Event(Resource.error("must be at least 3 characters.",null)))
             return
         }
         if(username.length > 24 || password.length > 24){
-            _registerStatus.postValue(Resource.error("characters are too long.",null))
+            _registerStatus.postValue(Event(Resource.error("characters are too long.",null)))
             return
         }
         viewModelScope.launch {
             val result = repository.register(username, password)
-            _registerStatus.postValue(result)
+            _registerStatus.postValue(Event(result))
         }
     }
 

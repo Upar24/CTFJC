@@ -1,15 +1,23 @@
 package com.example.ctf240521.ui.screens
 
+import android.widget.Toast
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
+import androidx.compose.runtime.livedata.observeAsState
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.example.ctf240521.data.local.entities.Chat
 import com.example.ctf240521.ui.component.ChatCard
 import com.example.ctf240521.ui.component.DividerItem
+import com.example.ctf240521.ui.component.ProgressCardToastItem
+import com.example.ctf240521.ui.screens.home.HomeViewModel
+import com.example.ctf240521.util.Status
 
 @Composable
 fun ChatScreen(){
@@ -17,9 +25,46 @@ fun ChatScreen(){
         Modifier
             .fillMaxSize()
             .padding(6.dp)){
+        val homeVM = hiltViewModel<HomeViewModel>()
         val listChat = listOf("lbhpost","lbhneed","hotsale","random",)
         var visibleChat by remember{ mutableStateOf("LBH Post") }
         Spacer(Modifier.padding(6.dp))
+        val saveChatState=homeVM.saveChatStatus.observeAsState()
+        var chatList= listOf<Chat>()
+        saveChatState.value?.let {
+            val result = it.peekContent()
+            when(result.status){
+                Status.SUCCESS ->{
+                    Toast.makeText(
+                        LocalContext.current,result.message ?: "Chat sent", Toast.LENGTH_SHORT
+                    ).show()
+                }
+                Status.ERROR -> {
+                    Toast.makeText(
+                        LocalContext.current,result.message ?: "An unknown error occured", Toast.LENGTH_SHORT
+                    ).show()
+                }
+                Status.LOADING -> {
+                    ProgressCardToastItem()
+                }
+            }
+        }
+        val getChatsState=homeVM.getChatStatus.observeAsState()
+        getChatsState.value?.let {
+            when(it.status){
+                Status.SUCCESS ->{
+                    chatList = it.data ?: return@let
+                }
+                Status.ERROR -> {
+                    Toast.makeText(
+                        LocalContext.current,it.message ?: "An unknown error occured", Toast.LENGTH_SHORT
+                    ).show()
+                }
+                Status.LOADING -> {
+                    ProgressCardToastItem()
+                }
+            }
+        }
         var tabIndex by remember { mutableStateOf(1)}
                 ScrollableTabRow(selectedTabIndex = tabIndex,Modifier.fillMaxWidth(),
                     backgroundColor =Color.Transparent) {
@@ -44,13 +89,18 @@ fun ChatScreen(){
                         )
                     }
                 }
+
         DividerItem()
         Row (Modifier.fillMaxWidth(),Arrangement.SpaceEvenly){
             Text(text = "Add New Chat")
             Text("Refresh Chat")
         }
         Text(text = visibleChat)
-        ChatCard()
+        chatList.forEach {
+            if(it.type==visibleChat){
+                ChatCard(it)
+            }
+        }
     }
 }
 @Preview

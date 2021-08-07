@@ -11,15 +11,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.example.ctf240521.ui.component.ButtonClickItem
-import com.example.ctf240521.ui.screens.post.PostViewModel
-import com.example.ctf240521.viewmodel.AuthViewModel
+import com.example.ctf240521.ui.screens.home.HomeViewModel
+import dagger.hilt.android.lifecycle.HiltViewModel
 
 @Composable
 fun HomeScreen(
 ) {
-    var visibleHome by remember { mutableStateOf("party")}
+    val homeVM= hiltViewModel<HomeViewModel>()
+    var visibleHome by remember { mutableStateOf("calculation")}
     Column(
         Modifier
             .fillMaxSize()
@@ -38,10 +37,16 @@ fun HomeScreen(
                 })
             }
         }
-        when(visibleHome){
-            "party" -> PartyScreen()
-            "calculation" -> CalculationScreen()
-            "chat" -> ChatScreen()
+        if(visibleHome=="party"){
+            homeVM.getToday()
+            homeVM.getDropList()
+            homeVM.getPartyList()
+            PartyScreen()
+        }else if(visibleHome=="calculation"){
+            CalculationScreen()
+        }else{
+            ChatScreen()
+            homeVM.getChat()
         }
     }
 }

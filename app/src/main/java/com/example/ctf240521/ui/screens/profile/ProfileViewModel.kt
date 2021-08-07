@@ -7,8 +7,8 @@ import androidx.lifecycle.viewModelScope
 import com.example.ctf240521.data.local.entities.User
 import com.example.ctf240521.data.local.entities.Wall
 import com.example.ctf240521.data.remote.requests.UpdateUserRequest
-import com.example.ctf240521.data.remote.requests.WallRequest
 import com.example.ctf240521.repository.PostRepository
+import com.example.ctf240521.util.Event
 import com.example.ctf240521.util.Resource
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -20,14 +20,14 @@ class ProfileViewModel @Inject constructor(
 ): ViewModel(){
     private val _user = MutableLiveData<Resource<User>>()
     val user : LiveData<Resource<User>> = _user
-    private val _updateProfile =MutableLiveData<Resource<String>>()
-    val updateProfile : LiveData<Resource<String>> = _updateProfile
-    private val _saveWallStatus = MutableLiveData<Resource<String>>()
-    val saveWallStatus : LiveData<Resource<String>> = _saveWallStatus
+    private val _updateProfile =MutableLiveData<Event<Resource<String>>>()
+    val updateProfile : LiveData<Event<Resource<String>>> = _updateProfile
+    private val _saveWallStatus = MutableLiveData<Event<Resource<String>>>()
+    val saveWallStatus : LiveData<Event<Resource<String>>> = _saveWallStatus
     private val _getWallStatus = MutableLiveData<Resource<List<Wall>>>()
     val getWallStatus : LiveData<Resource<List<Wall>>> = _getWallStatus
-    private val _deleteWallStatus = MutableLiveData<Resource<String>>()
-    val deleteWallStatus : LiveData<Resource<String>> = _deleteWallStatus
+    private val _deleteWallStatus = MutableLiveData<Event<Resource<String>>>()
+    val deleteWallStatus : LiveData<Event<Resource<String>>> = _deleteWallStatus
 
     fun getUser(username:String){
         _user.postValue(Resource.loading(null))
@@ -38,18 +38,18 @@ class ProfileViewModel @Inject constructor(
     }
 
     fun updateProfile(updateUserReq:UpdateUserRequest){
-        _updateProfile.postValue(Resource.loading(null))
+        _updateProfile.postValue(Event(Resource.loading(null)))
         viewModelScope.launch {
             val result=repository.updateProfile(updateUserReq)
-            _updateProfile.postValue(result)
+            _updateProfile.postValue(Event(result))
         }
     }
 
-    fun saveWall(wallReq : WallRequest){
-        _saveWallStatus.postValue(Resource.loading(null))
+    fun saveWall(wall : Wall){
+        _saveWallStatus.postValue(Event(Resource.loading(null)))
         viewModelScope.launch {
-            val result= repository.saveWall(wallReq)
-            _saveWallStatus.postValue(result)
+            val result= repository.saveWall(wall)
+            _saveWallStatus.postValue(Event(result))
         }
     }
 
@@ -61,10 +61,10 @@ class ProfileViewModel @Inject constructor(
         }
     }
     fun deleteWall(wall:Wall){
-        _deleteWallStatus.postValue(Resource.loading(null))
+        _deleteWallStatus.postValue(Event(Resource.loading(null)))
         viewModelScope.launch {
             val result=repository.deleteWall(wall)
-            _deleteWallStatus.postValue(result)
+            _deleteWallStatus.postValue(Event(result))
         }
     }
 

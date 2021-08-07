@@ -8,8 +8,8 @@ data class Chat(
     val name:String?="",
     val clubName:String?="",
     var chat:String?="",
-    var date: Long,
     val type:String?=null,
+    var date: Long=0,
     @PrimaryKey(autoGenerate = false)
     val _id:String= UUID.randomUUID().toString()
 )
@@ -19,7 +19,7 @@ data class Wall(
     val clubName:String?="",
     val wallOwner:String?="",
     var chat:String?="",
-    var date: Long,
+    var date: Long=0,
     @PrimaryKey(autoGenerate = false)
     val _id:String= UUID.randomUUID().toString()
 )

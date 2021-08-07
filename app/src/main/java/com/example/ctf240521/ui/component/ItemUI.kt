@@ -18,15 +18,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.example.ctf240521.R
-import com.example.ctf240521.data.local.entities.User
-import com.example.ctf240521.data.local.entities.Wall
+import com.example.ctf240521.data.local.entities.*
 import com.example.ctf240521.data.remote.requests.UpdateUserRequest
 import com.example.ctf240521.ui.screens.BottomNavigationScreens
+import com.example.ctf240521.ui.screens.TradingScreen
+import com.example.ctf240521.ui.screens.add.AddViewModel
+import com.example.ctf240521.ui.screens.home.HomeViewModel
 import com.example.ctf240521.ui.screens.profile.ProfileViewModel
 import com.example.ctf240521.util.Status
 import com.example.ctf240521.viewmodel.AuthViewModel
-import java.text.SimpleDateFormat
-import java.util.*
 
 @Composable
 fun ProfileInfoItem(number:String,desc:String){
@@ -52,12 +52,7 @@ fun DividerItem(){
     )
 }
 @Composable
-fun SwitchTOLoginOrRegisterTexts(
-    modifier: Modifier,
-    text1: String,
-    text2: String,
-    onClick: () -> Unit
-) {
+fun SwitchTOLoginOrRegisterTexts(modifier: Modifier,text1: String,text2: String,onClick: () -> Unit) {
     Row(
         modifier = modifier,
         horizontalArrangement = Arrangement.Center,
@@ -98,19 +93,20 @@ fun ButtonClickItem(desc: String,onClick: () -> Unit,warna : Color= Color.Unspec
     }
 }
 @Composable
-fun CardParty(desc: String){
+fun CardDrop(dropped: Dropped){
     Card(
         border=BorderStroke(1.dp,MaterialTheme.colors.onSurface),
         shape= RoundedCornerShape(8.dp),
         backgroundColor = MaterialTheme.colors.secondary
     ){
         Column(
-            Modifier.padding(6.dp),
+            Modifier
+                .padding(6.dp),
             horizontalAlignment = Alignment.CenterHorizontally,
         ){
-            Text(desc,style=MaterialTheme.typography.body2)
-            Text("CC",style = MaterialTheme.typography.h1)
-            Text("3 hrs",style = MaterialTheme.typography.caption)
+            Text("Day ${dropped.day}",style=MaterialTheme.typography.body2)
+            Text(dropped.name,style = MaterialTheme.typography.h1)
+            Text("${dropped.duration} hrs",style = MaterialTheme.typography.caption)
         }
     }
 }
@@ -177,7 +173,7 @@ fun TopBarItem(onIconClick: () -> Unit,modifier: Modifier){
     }
 }
 @Composable
-fun ChatCard(){
+fun ChatCard(chat: Chat){
     Card(
         border=BorderStroke(1.dp,MaterialTheme.colors.onSurface),
         shape= RoundedCornerShape(8.dp),
@@ -189,25 +185,23 @@ fun ChatCard(){
                     .fillMaxWidth()
                     .padding(6.dp)){
                 Row(Modifier.weight(1f)) {
-                    Text("UsernameUsernameUsernameUsernameUsernameUsernameUsernameUsername",Modifier.fillMaxWidth())
+                    Text(chat.username.toString(),Modifier.fillMaxWidth())
                 }
                 Row(Modifier.weight(1f)) {
-                    Text("UsernameUsernameUsernameUsernameUsernameUsernameUsernameUsername",Modifier.fillMaxWidth())
+                    Text(chat.clubName.toString(),Modifier.fillMaxWidth())
                 }
                 Spacer(Modifier.padding(3.dp))
                 Row(Modifier.weight(1f)) {
-                    Text("UsernameUsernameUsernameUsernameUsernameUsernameUsernameUsername",Modifier.fillMaxWidth())
+                    Text(chat.username.toString(),Modifier.fillMaxWidth())
                 }
             }
             DividerItem()
-            Text("At here will be the description about what they gonna post so " +
-                    "no need to worry about this gonna be post lol i hope you " +
-                    "will get this common sense. get it?",Modifier.padding(6.dp),textAlign=TextAlign.Justify)
+            Text(chat.chat.toString(),Modifier.padding(6.dp),textAlign=TextAlign.Justify)
         }
     }
 }
 @Composable
-fun TradingCard() {
+fun TradingCard(username:String,trading: Trading,editClick: () -> Unit,deleteClick: () -> Unit ){
     Card(
         border = BorderStroke(1.dp, MaterialTheme.colors.onSurface),
         shape = RoundedCornerShape(8.dp),
@@ -215,39 +209,45 @@ fun TradingCard() {
     ) {
         Column(Modifier.padding(6.dp)) {
 
-            Row(
-                Modifier
-                    .fillMaxWidth()
-            ) {
-                Row(Modifier.weight(1f)) {
-                    Text(
-                        "UsernameUsernameUsernameUsernameUsernameUsernameUsernameUsername",
-                        Modifier.fillMaxWidth()
-                    )
-                }
-                Row(Modifier.weight(1f)) {
-                    Text(
-                        "UsernameUsernameUsernameUsernameUsernameUsernameUsernameUsername",
-                        Modifier.fillMaxWidth()
-                    )
-                }
-                Spacer(Modifier.padding(3.dp))
-                Row(Modifier.weight(1f)) {
-                    Text(
-                        "UsernameUsernameUsernameUsernameUsernameUsernameUsernameUsername",
-                        Modifier.fillMaxWidth()
-                    )
+            HeaderCardItem("Date",trading.username.toString(),trading.clubName.toString())
+            DividerItem()
+            TwoTextItem("title",trading.title.toString())
+            TwoTextItem("description", trading.desc.toString())
+            Row(Modifier.fillMaxWidth(),horizontalArrangement =Arrangement.SpaceBetween){
+                TwoTextItem("Buying", "${trading.amountBuying} ${trading.itemBuying}" )
+                TwoTextItem("Selling", "${trading.amountSelling} ${trading.itemSelling}" )
+            }
+            if(username==trading.username) {
+                Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.End) {
+                    ButtonClickItem(desc = "Edit", onClick = editClick)
+                    ButtonClickItem(desc = "Delete", onClick = deleteClick)
                 }
             }
-            DividerItem()
-            Text("title", style = MaterialTheme.typography.caption)
-            Text("Heres your title trading", textAlign = TextAlign.Justify)
-            Text("description", style = MaterialTheme.typography.caption)
-            Text("Heres your description trading", textAlign = TextAlign.Justify)
-            Text("Buying", style = MaterialTheme.typography.caption)
-            Text("8 papers")
-            Text("For", style = MaterialTheme.typography.caption)
-            Text("8 papers")
+        }
+    }
+}
+@Composable
+fun TwoTextItem(text1:String,text2:String){
+    Column() {
+        Text(text1, style = MaterialTheme.typography.caption)
+        Text(text2,textAlign = TextAlign.Justify)
+    }
+}
+@Composable
+fun HeaderCardItem(text1:String,text2: String,text3:String){
+    Row(
+        Modifier
+            .fillMaxWidth()
+    ) {
+        Row(Modifier.weight(1f)) {
+            Text(text1,Modifier.fillMaxWidth())
+        }
+        Row(Modifier.weight(1f)) {
+            Text(text2,Modifier.fillMaxWidth(),textAlign = TextAlign.Center)
+        }
+        Spacer(Modifier.padding(3.dp))
+        Row(Modifier.weight(1f),) {
+            Text(text3,Modifier.fillMaxWidth(),textAlign = TextAlign.End)
         }
     }
 }
@@ -306,15 +306,16 @@ fun EditProfileDialog(user: User){
     val bioState = remember { TextFieldState(user.bio.toString()) }
     val uiState=profileVM.updateProfile.observeAsState()
     uiState.value?.let {
-        when(it.status){
+        val result= it.peekContent()
+        when(result.status){
             Status.SUCCESS ->{
                 Toast.makeText(
-                    LocalContext.current,it.message ?: "Profile Updated", Toast.LENGTH_SHORT
+                    LocalContext.current,result.message ?: "Profile Updated", Toast.LENGTH_SHORT
                 ).show()
             }
             Status.ERROR -> {
                 Toast.makeText(
-                    LocalContext.current,it.message ?: "An unknown error occured", Toast.LENGTH_SHORT
+                    LocalContext.current,result.message ?: "An unknown error occured", Toast.LENGTH_SHORT
                 ).show()
             }
             Status.LOADING -> {
@@ -374,12 +375,385 @@ fun WallList(wallList: List<Wall>,navController: NavHostController) {
     wallList.forEach {
         val profileVM= hiltViewModel<ProfileViewModel>()
         val authVM= hiltViewModel<AuthViewModel>()
-        authVM.isLoggedIn()
-        authVM.authenticateApi(authVM.usernamevm ?: "", authVM.passwordvm ?: "")
-        WallCard(wall = it,onWall = {navController.navigate(BottomNavigationScreens.OtherProfile.withArgs(it.username.toString()))},onDelete = {profileVM.deleteWall(it)})
+        WallCard(wall = it,onWall = {navController.navigate(BottomNavigationScreens.OtherProfile.withArgs(it.username.toString()))},onDelete = {
+            authVM.isLoggedIn()
+            authVM.authenticateApi(authVM.usernamevm ?: "", authVM.passwordvm ?: "")
+            profileVM.deleteWall(it)})
  }
 }
-@Preview
 @Composable
-fun X(){
+fun SaveTodayDialog(today:Today){
+    Column() {
+        var openDialog by remember { mutableStateOf(true)}
+        val homeVM = hiltViewModel<HomeViewModel>()
+        val idState = remember { TextFieldState(today._id) }
+        val regulerState = remember { TextFieldState(today.reguler) }
+        val ultraState = remember { TextFieldState(today.ultra) }
+        val authVM= hiltViewModel<AuthViewModel>()
+        if(openDialog){
+            AlertDialog(
+                onDismissRequest={openDialog = false},
+                title = { Text(text = "POTD") },
+                text = {
+                    Column(
+                        Modifier
+                            .padding(top = 24.dp, bottom = 12.dp, start = 6.dp, end = 6.dp)
+                            .verticalScroll(rememberScrollState()),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Spacer(modifier = Modifier.padding(12.dp))
+                        Spacer(modifier = Modifier.padding(12.dp))
+                        TextFieldOutlined(desc = "id", idState)
+                        Spacer(modifier = Modifier.padding(6.dp))
+                        TextFieldOutlined(desc = "reguler", regulerState)
+                        Spacer(modifier = Modifier.padding(6.dp))
+                        TextFieldOutlined(desc = "ultra", ultraState)
+                        Spacer(modifier = Modifier.padding(6.dp))
+                    }
+                },
+                confirmButton ={ Button(onClick = {
+                    authVM.isLoggedIn()
+                    authVM.authenticateApi(authVM.usernamevm ?: "", authVM.passwordvm ?: "")
+                    homeVM.saveToday(
+                        Today(
+                            regulerState.text,
+                            ultraState.text,
+                            idState.text
+                        )
+                    )
+                    homeVM.getToday()
+                }){
+                    Text("Save")
+                }},
+                dismissButton = {
+                    Button(
+                        onClick = {openDialog= false}
+                    ){
+                        Text("Cancel")
+                    }
+                }
+            )
+        }
+    }
+}
+@Composable
+fun AddTradingDialog(trading: Trading?,onClick: () -> Unit={}){
+    Column() {
+        var openDialog by remember { mutableStateOf(true)}
+        val homeVM = hiltViewModel<HomeViewModel>()
+        val addVM = hiltViewModel<AddViewModel>()
+        val titleState = remember { TextFieldState(trading?.title.toString()) }
+        val descState= remember {TextFieldState(trading?.desc.toString())}
+        val itemBuyingState = remember { TextFieldState(trading?.itemBuying.toString()) }
+        val amountBuyingState = remember { TextFieldState(trading?.amountBuying.toString()) }
+        val itemSellingState = remember { TextFieldState(trading?.itemSelling.toString()) }
+        val amountSellingState = remember { TextFieldState(trading?.amountSelling.toString()) }
+        val authVM= hiltViewModel<AuthViewModel>()
+        if(openDialog){
+            AlertDialog(
+                onDismissRequest={openDialog = false
+                    addVM.getAllTrading()
+                    onClick
+                                 },
+                title = { Text(text = "Trading") },
+                text = {
+                    Column(
+                        Modifier
+                            .padding(top = 24.dp, bottom = 12.dp, start = 6.dp, end = 6.dp)
+                            .verticalScroll(rememberScrollState()),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Spacer(modifier = Modifier.padding(12.dp))
+                        Spacer(modifier = Modifier.padding(12.dp))
+                        TextFieldOutlined(desc = "Title", titleState)
+                        Spacer(modifier = Modifier.padding(6.dp))
+                        TextFieldOutlined(desc = "Description", descState)
+                        Spacer(modifier = Modifier.padding(6.dp))
+                        TextFieldOutlined(desc = "Item Buying", itemBuyingState)
+                        Spacer(modifier = Modifier.padding(6.dp))
+                        TextFieldOutlined(desc = "Amount Buying", amountBuyingState)
+                        TextFieldOutlined(desc = "Item Selling", itemSellingState)
+                        Spacer(modifier = Modifier.padding(6.dp))
+                        TextFieldOutlined(desc = "Amount Selling", amountSellingState)
+                        Spacer(modifier = Modifier.padding(6.dp))
+                    }
+                },
+                confirmButton ={ Button(onClick = {
+                    authVM.isLoggedIn()
+                    authVM.authenticateApi(authVM.usernamevm ?: "", authVM.passwordvm ?: "")
+                    addVM.saveTrading(
+                        Trading(
+                            title=titleState.text,
+                            desc = descState.text,
+                            itemBuying = itemBuyingState.text,
+                            amountBuying = amountBuyingState.text,
+                            itemSelling = itemSellingState.text,
+                            amountSelling= amountSellingState.text
+                        )
+                    )
+                    addVM.getAllTrading()
+                    onClick
+                    openDialog= false
+                }){
+                    Text("Save")
+                }},
+                dismissButton = {
+                    Button(
+                        onClick = {openDialog= false
+                            addVM.getAllTrading()
+                            onClick
+                        }
+                    ){
+                        Text("Cancel")
+                    }
+                }
+            )
+        }
+    }
+}
+@Composable
+fun SaveDropDialog(){
+    Column() {
+        var openDialog by remember { mutableStateOf(true)}
+        val homeVM = hiltViewModel<HomeViewModel>()
+        val idState = remember { TextFieldState() }
+        val dayState= remember {TextFieldState()}
+        val roleState = remember { TextFieldState() }
+        val nameState = remember { TextFieldState() }
+        val durationState = remember { TextFieldState() }
+        val authVM= hiltViewModel<AuthViewModel>()
+        if(openDialog){
+            AlertDialog(
+                onDismissRequest={openDialog = false},
+                title = { Text(text = "Dropped") },
+                text = {
+                    Column(
+                        Modifier
+                            .padding(top = 24.dp, bottom = 12.dp, start = 6.dp, end = 6.dp)
+                            .verticalScroll(rememberScrollState()),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Spacer(modifier = Modifier.padding(12.dp))
+                        Spacer(modifier = Modifier.padding(12.dp))
+                        TextFieldOutlined(desc = "id", idState)
+                        Spacer(modifier = Modifier.padding(6.dp))
+                        TextFieldOutlined(desc = "day", dayState)
+                        Spacer(modifier = Modifier.padding(6.dp))
+                        TextFieldOutlined(desc = "role", roleState)
+                        Spacer(modifier = Modifier.padding(6.dp))
+                        TextFieldOutlined(desc = "name", nameState)
+                        Spacer(modifier = Modifier.padding(6.dp))
+                        TextFieldOutlined(desc = "duration", durationState)
+                        Spacer(modifier = Modifier.padding(6.dp))
+                    }
+                },
+                confirmButton ={ Button(onClick = {
+                    authVM.isLoggedIn()
+                    authVM.authenticateApi(authVM.usernamevm ?: "", authVM.passwordvm ?: "")
+                    homeVM.saveDrop(
+                        Dropped(
+                            roleState.text,
+                            nameState.text,
+                            durationState.text,
+                            dayState.text,
+                            idState.text
+                        )
+                    )
+                    homeVM.getDropList()
+                }){
+                    Text("Save")
+                }},
+                dismissButton = {
+                    Button(
+                        onClick = {openDialog= false
+                            authVM.isLoggedIn()
+                            authVM.authenticateApi(authVM.usernamevm ?: "", authVM.passwordvm ?: "")
+                            homeVM.deleteDrop(Dropped(
+                                roleState.text,
+                                nameState.text,
+                                durationState.text,
+                                dayState.text,
+                                idState.text
+                            ))
+                            homeVM.getDropList()
+                        }
+                    ){
+                        Text("Delete")
+                    }
+                }
+            )
+        }
+    }
+}
+@Composable
+fun SavePartyDialog(party:Party){
+    Column() {
+        var openDialog by remember { mutableStateOf(true)}
+        val homeVM = hiltViewModel<HomeViewModel>()
+        val authVM = hiltViewModel<AuthViewModel>()
+        val idState = remember { TextFieldState(party._id) }
+        val noState = remember { TextFieldState(party.no) }
+        val roleState = remember { TextFieldState(party.role) }
+        val nameState = remember { TextFieldState(party.name) }
+        val durationState = remember { TextFieldState(party.duration) }
+        val statusState = remember { TextFieldState(party.duration) }
+        if(openDialog){
+            AlertDialog(
+                onDismissRequest={openDialog = false},
+                title = { Text(text = "Party") },
+                text = {
+                    Column(
+                        Modifier
+                            .padding(top = 24.dp, bottom = 12.dp, start = 6.dp, end = 6.dp)
+                            .verticalScroll(rememberScrollState()),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Spacer(modifier = Modifier.padding(12.dp))
+                        Spacer(modifier = Modifier.padding(12.dp))
+                        TextFieldOutlined(desc = "id", idState)
+                        Spacer(modifier = Modifier.padding(6.dp))
+                        TextFieldOutlined(desc = "no", noState)
+                        Spacer(modifier = Modifier.padding(6.dp))
+                        TextFieldOutlined(desc = "role", roleState)
+                        Spacer(modifier = Modifier.padding(6.dp))
+                        TextFieldOutlined(desc = "name", nameState)
+                        Spacer(modifier = Modifier.padding(6.dp))
+                        TextFieldOutlined(desc = "duration", durationState)
+                        Spacer(modifier = Modifier.padding(6.dp))
+                        TextFieldOutlined(desc = "status", statusState)
+                        Spacer(modifier = Modifier.padding(6.dp))
+                    }
+                },
+                confirmButton ={ Button(onClick = {
+                    authVM.isLoggedIn()
+                    authVM.authenticateApi(authVM.usernamevm ?: "", authVM.passwordvm ?: "")
+                    homeVM.saveParty(
+                        Party(
+                            roleState.text,
+                            noState.text,
+                            nameState.text,
+                            durationState.text,
+                            statusState.text,
+                            _id=idState.text
+                        )
+                    )
+                    homeVM.getPartyList()
+                }){
+                    Text("Save")
+                }},
+                dismissButton = {
+                    Button(
+                        onClick = {
+                            authVM.isLoggedIn()
+                            authVM.authenticateApi(authVM.usernamevm ?: "", authVM.passwordvm ?: "")
+                            homeVM.saveParty(
+                                Party(
+                                    roleState.text,
+                                    noState.text,
+                                    nameState.text,
+                                    durationState.text,
+                                    statusState.text,
+                                    listOf(),
+                                    listOf(),
+                                    listOf(),
+                                    idState.text
+                                )
+                            )
+                            homeVM.getPartyList()
+                            openDialog= false
+                        }
+                    ){
+                        Text("Awal")
+                    }
+                }
+            )
+        }
+    }
+}
+@Composable
+fun ObserveUserList(onClick: () -> Unit){
+    val homeVM = hiltViewModel<HomeViewModel>()
+    var userList = listOf<User>()
+    val listUserState = homeVM.listUserStatus.observeAsState()
+    listUserState.value?.let {
+        when (it.status) {
+            Status.SUCCESS -> {
+                userList= it.data ?: return@let
+            }
+            Status.ERROR -> {
+                Toast.makeText(
+                    LocalContext.current, it.message ?: "An unknown error occured",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+            Status.LOADING -> {
+                ProgressCardToastItem()
+            }
+        }
+    }
+    Row(modifier = Modifier
+        .fillMaxSize()
+        .padding(6.dp),
+        Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ){
+        Column {
+            userList.forEach {
+                Card(
+                    modifier = Modifier
+                        .fillMaxWidth(1f)
+                        .padding(12.dp),
+                    shape= RoundedCornerShape(8.dp),
+                    backgroundColor = MaterialTheme.colors.primaryVariant
+                ){
+                    Row(
+                        Modifier
+                            .fillMaxWidth()
+                            .padding(6.dp),
+                        Arrangement.SpaceBetween
+                    ){
+                        TwoTextItem(text1 = it.username, text2 = it.name.toString())
+                        TwoTextItem(text1 = it.ign.toString(), text2 = it.clubName.toString())
+                    }
+                }
+            }
+            ButtonClickItem(desc = "Close", onClick = onClick)
+        }
+    }
+}
+@Composable
+fun SearchRefreshItem(desc: String,state: TextFieldState=remember{ TextFieldState() },onClick: () -> Unit){
+    Row(
+        Modifier
+            .fillMaxWidth()
+            .padding(6.dp),Arrangement.Center,Alignment.CenterVertically){
+        OutlinedTextField(
+            label={Text(text=desc)},
+            value =state.text,
+            onValueChange = {
+                state.text = it
+            }
+        )
+        Spacer(Modifier.padding(6.dp))
+        Image(
+            painterResource(id = R.drawable.search),
+            contentDescription = "Search Menu",
+            modifier= Modifier
+                .height(24.dp)
+                .clickable {}
+        )
+        Spacer(Modifier.padding(6.dp))
+        Image(
+            painterResource(id = R.drawable.refresh),
+            contentDescription = "Search Menu",
+            modifier= Modifier
+                .height(24.dp)
+                .clickable {}
+        )
+
+    }
 }

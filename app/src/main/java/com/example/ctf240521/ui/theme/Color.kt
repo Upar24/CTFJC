@@ -1,7 +1,7 @@
 package com.example.ctf240521.ui.theme
 
 import androidx.compose.ui.graphics.Color
-val white = Color(0xFFE8F5FC)
+val white = Color(0xFFF3F5F7)
 val blue0 = Color(0xFFE7F5FC)
 val blue1 = Color(0xFFEBF8FF)
 val blue2 = Color(0XFFC2EAFF)

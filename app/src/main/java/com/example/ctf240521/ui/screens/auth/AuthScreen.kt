@@ -30,12 +30,13 @@ fun RegisterScreen(
     val authVM = hiltViewModel<AuthViewModel>()
     val uiState= authVM.registerStatus.observeAsState()
     uiState.value?.let {
-        when(uiState.value?.status){
+        val result = it.peekContent()
+        when(result.status){
             Status.SUCCESS -> {
-                Toast.makeText(LocalContext.current,it.data ?: "successfully registered",
+                Toast.makeText(LocalContext.current,result.data ?: "successfully registered",
                     Toast.LENGTH_SHORT).show()}
             Status.ERROR -> {
-                Toast.makeText(LocalContext.current,it.message ?: "An unknown error occured",
+                Toast.makeText(LocalContext.current,result.message ?: "An unknown error occured",
                     Toast.LENGTH_SHORT).show()}
             Status.LOADING -> {
                 ProgressCardToastItem()
@@ -81,10 +82,11 @@ fun LoginScreen(
     val authVM= hiltViewModel<AuthViewModel>()
     val uiState= authVM.loginStatus.observeAsState()
     uiState.value?.let {
-        when(uiState.value?.status){
+        val result = it.peekContent()
+        when(result.status){
             Status.SUCCESS -> {
                 Toast.makeText(
-                    LocalContext.current,it.data ?: "successfully logged in",Toast.LENGTH_SHORT
+                    LocalContext.current,result.data ?: "successfully logged in",Toast.LENGTH_SHORT
                 ).show()
                 authVM.sharedPref.edit().putString(KEY_LOGGED_IN_USERNAME,authVM.usernamevm).apply()
                 authVM.sharedPref.edit().putString(KEY_LOGGED_IN_PASSWORD,authVM.passwordvm).apply()
@@ -95,7 +97,7 @@ fun LoginScreen(
             }
             Status.ERROR -> {
                 Toast.makeText(
-                    LocalContext.current,it.message ?: "An unknown error occured",Toast.LENGTH_SHORT
+                    LocalContext.current,result.message ?: "An unknown error occured",Toast.LENGTH_SHORT
                 ).show()
             }
             Status.LOADING -> {
